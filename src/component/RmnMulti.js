@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 const RmnMulti = ({ question, questionNumber, submitHandler, handleGoBack }) => {
-    const initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
+    let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
     const [checkbox, setCheckbox] = useState(initialCheckbox);
     const [value, setValue] = useState([]);
     const onInputChange = (e) => {
@@ -35,6 +35,11 @@ const RmnMulti = ({ question, questionNumber, submitHandler, handleGoBack }) => 
             return;
         }
     }, [value]);
+
+    useEffect(() => {
+        initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
+        setCheckbox(initialCheckbox);
+    }, [question]);
 
     const handleReset = () => {
         setValue([]);

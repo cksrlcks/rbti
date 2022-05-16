@@ -1,18 +1,3 @@
-const sortJSON = function (data, key, type) {
-    if (type == undefined) {
-        type = "asc";
-    }
-    return data.sort(function (a, b) {
-        var x = a[key];
-        var y = b[key];
-        if (type == "desc") {
-            return x > y ? -1 : x < y ? 1 : 0;
-        } else if (type == "asc") {
-            return x < y ? -1 : x > y ? 1 : 0;
-        }
-    });
-};
-
 class Rbti {
     constructor(data) {
         this.data = data;
@@ -205,6 +190,8 @@ class Rbti {
 
                 break;
         }
+
+        console.log(this.data.length);
     }
 
     result(dataArray) {

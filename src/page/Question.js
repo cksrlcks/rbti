@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import QuestionForm from "../component/Question";
 import { rmnQuestion } from "../data/question";
+import Home from "./Home";
 
 const Question = ({ rbti, questionList, updateAnswer }) => {
     const navigate = useNavigate();
-    const [questionNumber, setQuestionNumber] = useState(1);
+    const [questionNumber, setQuestionNumber] = useState(0);
     const handleAnswer = (qid, value) => {
         updateAnswer(qid, value);
 
@@ -25,21 +26,9 @@ const Question = ({ rbti, questionList, updateAnswer }) => {
         }
     };
 
-    useEffect(() => {
-        window.addEventListener("beforeunload", alertUser);
-        return () => {
-            window.removeEventListener("beforeunload", alertUser);
-        };
-    }, []);
-
-    const alertUser = (e) => {
-        e.preventDefault();
-        e.returnValue = "";
-
-        navigate("/");
-        return false;
-    };
-
+    if (questionNumber == 0) {
+        return <Home setQuestionNumber={setQuestionNumber} />;
+    }
     return <QuestionForm questionNumber={questionNumber} handleAnswer={handleAnswer} handleGoBack={handleGoBack} />;
 };
 

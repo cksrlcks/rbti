@@ -25,7 +25,7 @@ function App({ rbti }) {
         <Router>
             <Routes>
                 <Route path="*" element={<ErrorPage />} />
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Navigate replace to="question" />} />
                 <Route path="/question" element={<Question rbti={rbti} questionList={rmnQuestion} updateAnswer={updateAnswer} />} />
                 <Route path="/result" element={<Result rbti={rbti} questionList={rmnQuestion} answer={answer} />} />
             </Routes>

@@ -1,6 +1,6 @@
-import rmnData from "./rmn.json";
-import fileData from "./file.json";
-import pkgData from "./pkg.json";
+import rmnData from "./db/rmn.json";
+import fileData from "./db/file.json";
+import pkgData from "./db/pkg.json";
 
 const ormnData = rmnData.rows.map((rmn) => {
     const file = fileData.rows.filter((file) => file.pgm_file_id === rmn.pgm_file_id);
@@ -10,6 +10,7 @@ const ormnData = rmnData.rows.map((rmn) => {
         pkgSeq: pkgSeq[0] ? pkgSeq[0].pkg_seq : "",
         rmn_nm: rmn.rmn_nm,
         food_type: rmn.food_type,
+        rmn_seq: rmn.rmn_seq,
         cate1: rmn.cate1,
         cate2: rmn.cate2,
         cate3: rmn.cate3,

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const OrderType = ({ question, questionNumber, submitHandler, handleGoBack }) => {
-    const initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
+    let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
     const [checkbox, setCheckbox] = useState(initialCheckbox);
     const [value, setValue] = useState([]);
 
@@ -23,6 +23,11 @@ const OrderType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
             })
         );
     };
+
+    useEffect(() => {
+        initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
+        setCheckbox(initialCheckbox);
+    }, [question]);
 
     const handleReset = () => {
         setValue([]);

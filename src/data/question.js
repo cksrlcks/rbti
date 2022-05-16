@@ -1,6 +1,6 @@
-import rmnData from "./rmn.json";
+import rmnData from "./ormnData";
 import { randomPick } from "../lib/utill";
-const randomBagRmn = randomPick(rmnData.rows, 30);
+const randomBagRmn = randomPick(rmnData, 30);
 
 export const rmnQuestion = [
     {
