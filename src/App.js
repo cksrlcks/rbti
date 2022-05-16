@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Routes, NavLink, Navigate, useNavigate } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Home from "./page/Home";
+import Question from "./page/Question";
+import Result from "./page/Result";
+import ErrorPage from "./page/404";
+import { rmnQuestion } from "./data/question";
+
+function App({ rbti }) {
+    const defaultAnswer = rmnQuestion.map((item) => ({ qid: item.qId }));
+    const [answer, setAnswer] = useState(defaultAnswer);
+    const updateAnswer = (qid, value) => {
+        setAnswer((prev) =>
+            prev.map((item) => {
+                if (item.qid == qid) {
+                    return { ...item, value: value };
+                } else {
+                    return item;
+                }
+            })
+        );
+    };
+    return (
+        <Router>
+            <Routes>
+                <Route path="*" element={<ErrorPage />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/question" element={<Question rbti={rbti} questionList={rmnQuestion} updateAnswer={updateAnswer} />} />
+                <Route path="/result" element={<Result rbti={rbti} questionList={rmnQuestion} answer={answer} />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
