@@ -15,7 +15,7 @@ export const randomPick = (array, number) => {
     return array.slice(0, number);
 };
 
-export const sortJSON = function (data, key, type) {
+export const sortData = function (data, key, type) {
     if (type == undefined) {
         type = "asc";
     }
@@ -28,4 +28,16 @@ export const sortJSON = function (data, key, type) {
             return x < y ? -1 : x > y ? 1 : 0;
         }
     });
+};
+
+export const stringToArray = function (string) {
+    return string
+        .split(",")
+        .map((element) => element.trim())
+        .filter((element) => element !== "");
+};
+
+export const organizeArray = function (array) {
+    //배열의 앞뒤공백, 중복제거
+    return array.map((element) => element.trim()).filter((element) => element !== "");
 };

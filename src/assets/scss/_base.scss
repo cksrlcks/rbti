@@ -1,0 +1,31 @@
+html,
+body {
+    -webkit-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+}
+
+body {
+    font-family: "Pretendard", sans-serif;
+    color: #666;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    height: 100vh;
+    overflow: overlay;
+    overflow-x: hidden;
+}
+body::-webkit-scrollbar {
+    width: 4px;
+}
+body::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 42%, 0.49);
+    border-radius: 100px;
+}
+
+.a11y {
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+}

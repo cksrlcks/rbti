@@ -30,27 +30,27 @@ export const rmnQuestion = [
         answerList: [
             {
                 label: "10대",
-                value: "10",
+                value: "10대",
             },
             {
                 label: "20대",
-                value: "20",
+                value: "20대",
             },
             {
                 label: "30대",
-                value: "30",
+                value: "30대",
             },
             {
                 label: "40대",
-                value: "40",
+                value: "40대",
             },
             {
                 label: "50대",
-                value: "50",
+                value: "50대",
             },
             {
                 label: "60대 이상",
-                value: "60",
+                value: "60대 이상",
             },
         ],
     },

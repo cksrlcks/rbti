@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import QuestionForm from "../component/Question";
-import { rmnQuestion } from "../data/question";
-import Home from "./Home";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import QuestionForm from "../component/Form/QuestionForm";
+import Intro from "../component/Intro";
 
-const Question = ({ rbti, questionList, updateAnswer }) => {
+const Question = ({ questionList, updateAnswer, userCount }) => {
     const navigate = useNavigate();
     const [questionNumber, setQuestionNumber] = useState(0);
     const handleAnswer = (qid, value) => {
         updateAnswer(qid, value);
 
         if (questionNumber > questionList.length - 1) {
-            navigate("/result");
+            navigate("/loading");
             return;
         } else {
             setQuestionNumber((prev) => prev + 1);
@@ -27,7 +26,7 @@ const Question = ({ rbti, questionList, updateAnswer }) => {
     };
 
     if (questionNumber == 0) {
-        return <Home setQuestionNumber={setQuestionNumber} />;
+        return <Intro setQuestionNumber={setQuestionNumber} userCount={userCount} />;
     }
     return <QuestionForm questionNumber={questionNumber} handleAnswer={handleAnswer} handleGoBack={handleGoBack} />;
 };

@@ -1,0 +1,13 @@
+@import "reset";
+@import "fonts";
+@import "base";
+@import "color";
+@import "keyframes";
+#rbti-root {
+    height: 100%;
+    #rbti-root-container {
+        height: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+}
