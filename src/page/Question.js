@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QuestionForm from "../component/Form/QuestionForm";
-import Intro from "../component/Intro";
-import useBackListener from "../hooks/useBackListener";
+import ProgressBar from "../component/ProgressBar";
 
 const Question = ({ questionList, updateAnswer, userCount }) => {
     const navigate = useNavigate();
     const [questionNumber, setQuestionNumber] = useState(1);
-    const [question, setQuestion] = useState(questionList.find((q) => q.qId == questionNumber));
+    const [question, setQuestion] = useState(questionList);
 
     useEffect(() => {
         //뒤로가기 방지
@@ -32,10 +31,6 @@ const Question = ({ questionList, updateAnswer, userCount }) => {
         }
     };
 
-    useEffect(() => {
-        setQuestion((prev) => questionList.find((q) => q.qId == questionNumber));
-    }, [questionNumber]);
-
     const handleGoBack = () => {
         if (questionNumber - 1 < 1) {
             setQuestionNumber((prev) => 1);
@@ -44,12 +39,14 @@ const Question = ({ questionList, updateAnswer, userCount }) => {
         }
     };
 
-    useBackListener(() => {
-        //뒤로가기시 브라우저의 뒤로가기 가로채기
-        // handleGoBack();
-    });
-
-    return <QuestionForm question={question} handleAnswer={handleAnswer} handleGoBack={handleGoBack} />;
+    return (
+        <>
+            <ProgressBar stage={questionNumber} max={question.length} />
+            {question.map((q) => (
+                <QuestionForm key={q.qId} question={q} handleAnswer={handleAnswer} handleGoBack={handleGoBack} questionNumber={questionNumber} />
+            ))}
+        </>
+    );
 };
 
 export default Question;

@@ -9,6 +9,7 @@ import Result from "./page/Result";
 import Intro from "./component/Intro";
 import ErrorPage from "./page/404";
 import { rmnQuestion } from "./data/question";
+import ScrollTop from "./component/ScrollTop";
 
 function App({ rbti }) {
     const defaultAnswer = rmnQuestion.map((item) => ({ qid: item.qId }));
@@ -41,6 +42,7 @@ function App({ rbti }) {
         <ThemeProvider theme={theme}>
             <AppWrapper>
                 <Router>
+                    <ScrollTop />
                     <Routes>
                         <Route path="*" element={<ErrorPage />} />
                         <Route path="/" element={<Intro userCount={userCount} />} />

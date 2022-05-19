@@ -6,50 +6,35 @@ import MultiOrderType from "./MultiOrderType";
 import MultiType from "./MultiType";
 import RmnMulti from "./RmnMulti";
 import styled from "styled-components";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
-const Question = ({ question, handleAnswer, handleGoBack }) => {
+const Question = ({ question, handleAnswer, handleGoBack, questionNumber }) => {
     const submitHandler = (value) => {
         handleAnswer(question.qId, value);
     };
+    if (question.qId == questionNumber) {
+        return <QuestionBox question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />;
+    }
+};
 
+export default Question;
+
+const QuestionBox = ({ question, submitHandler, handleGoBack }) => {
     return (
         <Form>
             {question && (
                 <>
-                    <TopTitle>
-                        <div className="q-number">Q.{question.qId}</div>
-                        <div className="q-title">{question.title}</div>
-                    </TopTitle>
-                    <>
-                        {question.qType == "input" && <InputType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "radio" && <RadioType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "order" && <OrderType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "multiOrder" && <MultiOrderType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "multi" && <MultiType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "rmn_mulit" && <RmnMulti question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                    </>
+                    {question.qType == "input" && <InputType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                    {question.qType == "radio" && <RadioType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                    {question.qType == "order" && <OrderType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                    {question.qType == "multiOrder" && <MultiOrderType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                    {question.qType == "multi" && <MultiType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                    {question.qType == "rmn_mulit" && <RmnMulti question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
                 </>
             )}
         </Form>
     );
 };
-
-export default Question;
-
-const TopTitle = styled.div`
-    margin: 100px 0 50px;
-    .q-number {
-        font-size: 30px;
-        font-weight: 700;
-        margin-bottom: 1em;
-        color: #000;
-    }
-    .q-title {
-        font-size: 20px;
-        color: #000;
-        font-weight: 700;
-    }
-`;
 
 const Form = styled.div`
     .guide {

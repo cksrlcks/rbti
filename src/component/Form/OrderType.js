@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Buttons/";
+import TopTitle from "./TopTitle";
+import { motion } from "framer-motion";
 
 const OrderType = ({ question, submitHandler, handleGoBack }) => {
     let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
@@ -61,7 +63,8 @@ const OrderType = ({ question, submitHandler, handleGoBack }) => {
     };
 
     return (
-        <>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+            <TopTitle qId={question.qId} qTitle={question.title} />
             <div className="guide">가장 선호하는 순서대로 선택해주세요</div>
             <div className="question-container">
                 {checkbox.map((item, idx) => (
@@ -87,7 +90,7 @@ const OrderType = ({ question, submitHandler, handleGoBack }) => {
                 <Button onClick={onGoBack} name={"이전"} className={"prev"} />
                 <Button onClick={onSubmit} name={"다음"} />
             </div>
-        </>
+        </motion.div>
     );
 };
 

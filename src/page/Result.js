@@ -262,6 +262,7 @@ const ResultForm = styled.div`
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 5px;
             margin: 20px 0 0;
             .rmn-tag {
@@ -269,6 +270,7 @@ const ResultForm = styled.div`
                 color: #000;
                 padding: 0.4em 1em;
                 border-radius: 4px;
+                white-space: nowrap;
             }
         }
     }

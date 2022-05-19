@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../Buttons/";
-import useBackListener from "../../hooks/useBackListener";
+import TopTitle from "./TopTitle";
+import { motion } from "framer-motion";
 
 const RadioType = ({ question, submitHandler, handleGoBack }) => {
     const [value, setValue] = useState("");
@@ -23,13 +24,9 @@ const RadioType = ({ question, submitHandler, handleGoBack }) => {
         handleGoBack();
     };
 
-    useBackListener(() => {
-        //뒤로가기시 브라우저의 뒤로가기 가로채기
-        onGoBack();
-    });
-
     return (
-        <>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+            <TopTitle qId={question.qId} qTitle={question.title} />
             <div className="question-container">
                 {question.answerList.map((item, idx) => (
                     <label key={item.value}>
@@ -42,7 +39,7 @@ const RadioType = ({ question, submitHandler, handleGoBack }) => {
                 <Button onClick={onGoBack} name={"이전"} className={"prev"} />
                 <Button onClick={onSubmit} name={"다음"} />
             </div>
-        </>
+        </motion.div>
     );
 };
 

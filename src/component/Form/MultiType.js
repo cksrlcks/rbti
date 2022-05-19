@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Buttons/";
+import TopTitle from "./TopTitle";
+import { motion } from "framer-motion";
 
 const MultiType = ({ question, submitHandler, handleGoBack }) => {
     let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
@@ -101,7 +103,8 @@ const MultiType = ({ question, submitHandler, handleGoBack }) => {
     };
 
     return (
-        <>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+            <TopTitle qId={question.qId} qTitle={question.title} />
             <div className="guide">
                 최대 <span className="num">{question.max}개</span> 선택하실 수 있어요
             </div>
@@ -129,7 +132,7 @@ const MultiType = ({ question, submitHandler, handleGoBack }) => {
                 <Button onClick={onGoBack} name={"이전"} className={"prev"} />
                 <Button onClick={onSubmit} name={"다음"} />
             </div>
-        </>
+        </motion.div>
     );
 };
 
