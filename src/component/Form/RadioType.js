@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Button from "../Buttons/";
+import useBackListener from "../../hooks/useBackListener";
 
-const RadioType = ({ question, questionNumber, submitHandler, handleGoBack }) => {
+const RadioType = ({ question, submitHandler, handleGoBack }) => {
     const [value, setValue] = useState("");
 
     const onInputChange = (e) => {
@@ -14,7 +15,7 @@ const RadioType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
             return;
         }
         setValue("");
-        submitHandler(question.qId, value);
+        submitHandler(value);
     };
 
     const onGoBack = () => {
@@ -22,12 +23,17 @@ const RadioType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
         handleGoBack();
     };
 
+    useBackListener(() => {
+        //뒤로가기시 브라우저의 뒤로가기 가로채기
+        onGoBack();
+    });
+
     return (
         <>
             <div className="question-container">
                 {question.answerList.map((item, idx) => (
                     <label key={item.value}>
-                        <input type="radio" name={`radio-${questionNumber}`} value={item.value} onChange={onInputChange} checked={value === item.value} className="a11y" />
+                        <input type="radio" name={`radio-${question.qId}`} value={item.value} onChange={onInputChange} checked={value === item.value} className="a11y" />
                         <span className="label">{item.label}</span>
                     </label>
                 ))}

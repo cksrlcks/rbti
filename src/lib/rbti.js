@@ -319,6 +319,9 @@ class Rbti {
             .map((item, idx) => item.rmn_seq)
             .slice(0, 5);
 
+        //베스트라면 첫번째라면의 잘팔리는순위 (sellNum로 판단)
+        this.bestRmnRank = sortData(this.originRmnData, "sellNum", "desc").find((item) => item.rmn_seq == this.bestRmn[0]).sellNum;
+
         //다른사람 베스트라면(라면데이터) 4개선정 (seq배열만 전달)
         this.otherFvRmn = sortData(this.originRmnData, "fvNum", "desc")
             .map((item, idx) => item.rmn_seq)
@@ -327,6 +330,7 @@ class Rbti {
         return {
             answer: this.answer,
             bestRmn: this.bestRmn,
+            bestRmnRank: this.bestRmnRank,
             attrRmn: this.attrRmn,
             otherFvRmn: this.otherFvRmn,
         };

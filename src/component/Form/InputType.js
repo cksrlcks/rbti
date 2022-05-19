@@ -9,7 +9,7 @@ const InputType = ({ question, submitHandler, handleGoBack }) => {
             alert("닉네임을 입력해주세요");
             return;
         }
-        submitHandler(question.qId, name);
+        submitHandler(name);
     };
 
     const onGoBack = () => {

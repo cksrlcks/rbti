@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate, useSearchParams, UNSAFE_NavigationContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import qs from "qs";
 import { stringToArray } from "../lib/utill";
 import Button from "../component/Buttons";
 import styled from "styled-components";
 import ormnData from "../data/ormnData";
 import { rmnQuestion as questionList } from "../data/question";
+import useBackListener from "../hooks/useBackListener";
 
 const Result = ({ answer }) => {
     const navigate = useNavigate();
@@ -14,18 +15,17 @@ const Result = ({ answer }) => {
     const [otherFvRmn, setOtherFvRmn] = useState("");
     const [attrRmn, setAttrRmn] = useState("");
     const parsedString = qs.parse(window.location.search, { ignoreQueryPrefix: true });
-
     useBackListener(() => {
         //뒤로가기시 브라우저의 뒤로가기 가로채기
-        navigate("/question");
+        navigate("/");
     });
 
     //결과공유를 위해 응답결과를 URL 스트링으로 저장한걸 들고와서 state업데이트 해주기
     //쿼리 스트링 없으면 검사시작화면으로 보내주기
     useEffect(() => {
-        if (!Object.keys(parsedString).length) {
+        if (!Object.keys(parsedString).length || parsedString.hasOwnProperty("undefined")) {
             //쿼리 스트링 없으면 검사시작화면으로 보내주기
-            navigate("/question");
+            navigate("/");
         }
 
         setResult(parsedString);
@@ -75,21 +75,15 @@ const Result = ({ answer }) => {
         return `https://www.oramyun.com/data/SITE000001/ORMN_RMN/${name}.png`;
     };
 
-    useEffect(() => {
-        return () => {
-            navigate("/question");
-        };
-    }, []);
-
     return (
         <>
             {result && bestRmn.length && otherFvRmn.length && (
                 <ResultForm>
                     <div className="result-top">
                         <div className="title">
-                            <div>찾았어요!!!</div>
-                            <div>{result.answer.q1}님이 제일 좋아하실만한 라면!</div>
-                            <div>
+                            <div className="title-find">찾았어요!!!</div>
+                            <div className="title-name">{result.answer.q1}님이 제일 좋아하실만한 라면!</div>
+                            <div className="title-rmn">
                                 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이에요!
                             </div>
                         </div>
@@ -113,7 +107,7 @@ const Result = ({ answer }) => {
 
                     <div className="result-ment">
                         <div className="ment">
-                            해당 제품은 오늘의라면에서 {bestRmn[0].bestSell ? bestRmn[0].bestSell : "--"}번째로 <br />잘 나가는 라면이예요😎
+                            해당 제품은 오늘의라면에서 {result.bestRmnRank}번째로 <br />잘 나가는 라면이예요😎
                         </div>
                         <div className="ment">
                             {result.answer.q7 == "매운맛" && "쓰읍하- 화끈한 매운맛에"}
@@ -154,16 +148,14 @@ const Result = ({ answer }) => {
                     </div>
                     <div className="ment">
                         {bestRmn[0].rmn_nm} 다음으로 좋아하실 만한 라면들이에요!
-                        <div className="emp">
-                            그리고, 지금 이 모~든 라면들을 <br />한 봉지 씩 바로 맛 보실 수 있어요!!
-                        </div>
+                        <div className="emp">그리고, 지금 이 모~든 라면들을 한 봉지 씩 바로 맛 보실 수 있어요!!</div>
                     </div>
                     <div className="result-btn-wrapper">
                         <a href="https://www.oramyun.com/view.do?no=23" target="_blank">
                             이 조합으로 먹어보기
                         </a>
                         <a href="https://www.oramyun.com/view.do?no=23">내가 직접 다시 고르기</a>
-                        <Button name="다시하기" onClick={() => navigate("/question")} />
+                        <Button name="다시하기" onClick={() => navigate("/")} />
                     </div>
                     <div className="other">
                         <div className="other-ment">
@@ -189,7 +181,9 @@ const Result = ({ answer }) => {
                         </div>
 
                         <div className="share">
-                            <div className="ment">친구에게 테스트 공유하기</div>
+                            <button type="button" className="ment">
+                                친구에게 테스트 공유하기
+                            </button>
                         </div>
                     </div>
                 </ResultForm>
@@ -220,21 +214,6 @@ const Answer = ({ qid, value }) => {
     return <>{answer}</>;
 };
 
-const useBackListener = (callback) => {
-    const navigator = useContext(UNSAFE_NavigationContext).navigator;
-
-    useEffect(() => {
-        const listener = ({ location, action }) => {
-            if (action === "POP") {
-                callback({ location, action });
-            }
-        };
-
-        const unlisten = navigator.listen(listener);
-        return unlisten;
-    }, [callback, navigator]);
-};
-
 const ResultForm = styled.div`
     padding: 100px 0;
     text-align: center;
@@ -243,6 +222,21 @@ const ResultForm = styled.div`
         .title {
             font-size: 20px;
             color: #000;
+
+            .title-find {
+                margin-bottom: 0.4em;
+                font-weight: 700;
+                color: ${(props) => props.theme.primaryColor};
+            }
+            .title-name {
+                font-weight: 700;
+                font-size: 24px;
+                margin-bottom: 1em;
+            }
+            .title-rmn {
+                font-weight: 700;
+                font-size: 32px;
+            }
         }
         margin-bottom: 40px;
     }
@@ -281,12 +275,22 @@ const ResultForm = styled.div`
 
     .ment {
         margin-bottom: 1em;
+        line-height: 1.3;
+        font-weight: 500;
+        color: #000;
+        font-size: 18px;
+        padding: 0 2em;
+        word-break: keep-all;
+        .emp {
+            margin-top: 0.2em;
+        }
     }
 
     .rmn-list {
         display: flex;
         flex-wrap: wrap;
         align-items: stretch;
+        margin-bottom: 30px;
         .rmn-item {
             width: 50%;
             padding: 20px;
@@ -294,6 +298,7 @@ const ResultForm = styled.div`
     }
 
     .result-btn-wrapper {
+        margin-top: 80px;
         margin-bottom: 100px;
         a {
             display: block;
@@ -336,6 +341,16 @@ const ResultForm = styled.div`
     }
 
     .share {
-        margin: 40px 0;
+        button {
+            margin: 40px 0;
+            width: 100%;
+            height: 60px;
+            background: ${(props) => props.theme.primaryColor};
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
     }
 `;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Buttons/";
 
-const MultiType = ({ question, questionNumber, submitHandler, handleGoBack }) => {
+const MultiType = ({ question, submitHandler, handleGoBack }) => {
     let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
     const [checkbox, setCheckbox] = useState(initialCheckbox);
     const [value, setValue] = useState([]);
@@ -82,7 +82,7 @@ const MultiType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
 
         setValue("");
         setCheckbox((prev) => initialCheckbox);
-        submitHandler(question.qId, value);
+        submitHandler(value);
     };
 
     //다시선택하기 보이는 유무
@@ -111,7 +111,7 @@ const MultiType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
                         <input
                             type="checkbox"
                             value={item.value}
-                            name={`radio-${questionNumber}`}
+                            name={`radio-${question.qId}`}
                             onChange={onInputChange}
                             disabled={item.disabled ? true : false}
                             checked={item.checked ? true : false}

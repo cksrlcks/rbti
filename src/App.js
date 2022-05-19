@@ -6,6 +6,7 @@ import AppWrapper from "./component/Layouts/App";
 import Question from "./page/Question";
 import Loading from "./page/Loading";
 import Result from "./page/Result";
+import Intro from "./component/Intro";
 import ErrorPage from "./page/404";
 import { rmnQuestion } from "./data/question";
 
@@ -42,8 +43,8 @@ function App({ rbti }) {
                 <Router>
                     <Routes>
                         <Route path="*" element={<ErrorPage />} />
-                        <Route path="/" element={<Navigate replace to="question" />} />
-                        <Route path="/question" element={<Question questionList={rmnQuestion} updateAnswer={updateAnswer} userCount={userCount} />} />
+                        <Route path="/" element={<Intro userCount={userCount} />} />
+                        <Route path="/question" element={<Question questionList={rmnQuestion} updateAnswer={updateAnswer} />} />
                         <Route path="/loading" element={<Loading rbti={rbti} questionList={rmnQuestion} answer={answer} />} />
                         <Route path="/result" element={<Result rbti={rbti} questionList={rmnQuestion} answer={answer} />} />
                     </Routes>

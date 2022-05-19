@@ -35,6 +35,7 @@ const ormnData = rmnData.rows.map((rmn, idx) => {
         mnfctr_nm: rmn.mnfctr_nm,
         ...file[0],
         score: 0,
+        sellNum: idx * 1,
         fvNum: idx * 50, //임의로 인덱스 50곱한수로
     };
 });

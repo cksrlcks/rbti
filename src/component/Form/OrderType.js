@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Buttons/";
 
-const OrderType = ({ question, questionNumber, submitHandler, handleGoBack }) => {
+const OrderType = ({ question, submitHandler, handleGoBack }) => {
     let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
     const [checkbox, setCheckbox] = useState(initialCheckbox);
     const [value, setValue] = useState([]);
@@ -42,7 +42,7 @@ const OrderType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
             return;
         }
         setValue("");
-        submitHandler(question.qId, value);
+        submitHandler(value);
     };
 
     //다시선택하기 보이는 유무
@@ -69,7 +69,7 @@ const OrderType = ({ question, questionNumber, submitHandler, handleGoBack }) =>
                         <input
                             type="checkbox"
                             value={item.value}
-                            name={`radio-${questionNumber}`}
+                            name={`radio-${question.qId}`}
                             onChange={onInputChange}
                             disabled={item.disabled ? true : false}
                             checked={item.checked ? true : false}

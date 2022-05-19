@@ -5,16 +5,11 @@ import RadioType from "./RadioType";
 import MultiOrderType from "./MultiOrderType";
 import MultiType from "./MultiType";
 import RmnMulti from "./RmnMulti";
-import { rmnQuestion } from "../../data/question";
 import styled from "styled-components";
 
-const Question = ({ questionNumber, handleAnswer, handleGoBack }) => {
-    const [question, setQuestion] = useState(rmnQuestion[questionNumber - 1]);
-    useEffect(() => {
-        setQuestion(rmnQuestion[questionNumber - 1]);
-    }, [questionNumber]);
-    const submitHandler = (questionNumber, value) => {
-        handleAnswer(questionNumber, value);
+const Question = ({ question, handleAnswer, handleGoBack }) => {
+    const submitHandler = (value) => {
+        handleAnswer(question.qId, value);
     };
 
     return (
@@ -22,16 +17,16 @@ const Question = ({ questionNumber, handleAnswer, handleGoBack }) => {
             {question && (
                 <>
                     <TopTitle>
-                        <div className="q-number">Q.{questionNumber}</div>
+                        <div className="q-number">Q.{question.qId}</div>
                         <div className="q-title">{question.title}</div>
                     </TopTitle>
                     <>
-                        {question.qType == "input" && <InputType questionNumber={questionNumber} question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "radio" && <RadioType questionNumber={questionNumber} question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "order" && <OrderType questionNumber={questionNumber} question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "multiOrder" && <MultiOrderType questionNumber={questionNumber} question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "multi" && <MultiType questionNumber={questionNumber} question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
-                        {question.qType == "rmn_mulit" && <RmnMulti questionNumber={questionNumber} question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                        {question.qType == "input" && <InputType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                        {question.qType == "radio" && <RadioType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                        {question.qType == "order" && <OrderType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                        {question.qType == "multiOrder" && <MultiOrderType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                        {question.qType == "multi" && <MultiType question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
+                        {question.qType == "rmn_mulit" && <RmnMulti question={question} submitHandler={submitHandler} handleGoBack={handleGoBack} />}
                     </>
                 </>
             )}
