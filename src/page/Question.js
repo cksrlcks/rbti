@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styledComponents from "styled-components";
 import QuestionForm from "../component/Form/QuestionForm";
 import ProgressBar from "../component/ProgressBar";
 
-const Question = ({ questionList, updateAnswer, userCount }) => {
+const Question = ({ updateAnswer, rbti, setDone }) => {
     const navigate = useNavigate();
     const [questionNumber, setQuestionNumber] = useState(1);
-    const [question, setQuestion] = useState(questionList);
+    const [question, setQuestion] = useState(rbti.questionList);
 
     useEffect(() => {
         //뒤로가기 방지
@@ -20,11 +21,18 @@ const Question = ({ questionList, updateAnswer, userCount }) => {
         return () => window.removeEventListener("popstate", preventGoBack);
     }, []);
 
+    useEffect(() => {
+        if (!question) {
+            navigate("/");
+            return;
+        }
+    }, [question]);
+
     const handleAnswer = (qid, value) => {
         updateAnswer(qid, value);
 
-        if (questionNumber > questionList.length - 1) {
-            navigate("/loading");
+        if (questionNumber > question.length - 1) {
+            navigate("/loading", { state: { done: true } });
             return;
         } else {
             setQuestionNumber((prev) => prev + 1);
@@ -41,10 +49,8 @@ const Question = ({ questionList, updateAnswer, userCount }) => {
 
     return (
         <>
-            <ProgressBar stage={questionNumber} max={question.length} />
-            {question.map((q) => (
-                <QuestionForm key={q.qId} question={q} handleAnswer={handleAnswer} handleGoBack={handleGoBack} questionNumber={questionNumber} />
-            ))}
+            {question && <ProgressBar stage={questionNumber} max={question.length} />}
+            {question && question.map((q) => <QuestionForm key={q.qId} question={q} handleAnswer={handleAnswer} handleGoBack={handleGoBack} questionNumber={questionNumber} />)}
         </>
     );
 };

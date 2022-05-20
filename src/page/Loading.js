@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import qs from "qs";
 
 const Loading = ({ answer, rbti }) => {
-    const [result, setResult] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         let stringified;
-        for (let i = 0; i < answer.length; i++) {
-            if (!answer[i].value) {
-                alert("설문을 위해 처음으로 돌아갑니다.");
-                navigate("/");
-                break;
-            }
+        if (!location.state) {
+            alert("설문을 위해 처음으로 돌아갑니다.");
+            navigate("/");
+            return;
         }
 
         //rbti클래스에서 응답결과로 평가시작
-        const evalValues = rbti.result(answer);
+        const evalValues = rbti.result(
+            Object.keys(answer).map((key) => ({
+                qid: +key,
+                value: answer[key],
+            }))
+        );
 
         //서버로 보내서 평가받아옴 (axios요청구간, 일단 임시로 3초후)
         console.log("서버로 보낼 응답데이터", evalValues);
@@ -28,11 +32,6 @@ const Loading = ({ answer, rbti }) => {
             if (!stringified) {
                 navigate("/");
             }
-            setResult((prev) => {
-                //결과공유하기할때, state상태 url에 가져갈필요가 잇어서 qs라이브러리 이용함
-
-                return evalValues;
-            });
 
             navigate(`/result?${stringified}`);
         }, 3000);
@@ -41,7 +40,7 @@ const Loading = ({ answer, rbti }) => {
     return (
         <LoadingBox>
             잠시만 기다려주세요
-            <br /> {answer[0].value && `${answer[0].value}님의`} 라면박스를 조립중입니다
+            <br /> {`${answer[1]}님의`} 라면박스를 조립중입니다
             <br />
             <br /> (서버로 설문데이터꾸러미 보냅니다. 3초후 랜더링)
         </LoadingBox>

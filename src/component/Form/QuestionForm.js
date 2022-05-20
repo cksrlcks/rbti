@@ -92,19 +92,22 @@ const Form = styled.div`
             width: 100%;
             height: 60px;
             border: 2px solid #000;
-            padding: 0 80px 0 1em;
+            padding: 0 1em;
             border-radius: 8px;
             color: #000;
             margin-bottom: 5px;
             position: relative;
 
+            &:active {
+                box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+            }
+
             .num {
-                position: absolute;
-                top: 50%;
+                flex: none;
+                margin-left: auto;
                 right: 20px;
                 width: 30px;
                 height: 30px;
-                transform: translateY(-50%);
                 background: ${(props) => props.theme.primaryColor};
                 color: #fff;
                 border-radius: 50%;

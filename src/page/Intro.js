@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Bongi from "../../assets/img/bongi.png";
-import Button from "../Buttons";
+import Bongi from "../assets/img/bongi.png";
+import Button from "../component/Buttons";
 import styled from "styled-components";
 
-const Home = ({ setQuestionNumber, userCount }) => {
+const Home = ({ userCount, loading }) => {
     const navigate = useNavigate();
     return (
         <IntroBlock>
@@ -16,7 +16,8 @@ const Home = ({ setQuestionNumber, userCount }) => {
                 <div className="title">나도 몰랐던 내 취향 라면 찾기🌟</div>
                 <div className="count">{userCount}명 참여완료!</div>
             </div>
-            <Button onClick={() => navigate("/question")} name={"바로시작하기"} />
+            {loading && "라니가 라면박스를 정리중이에요!~ 잠시만 기다려주세요"}
+            {!loading && <Button onClick={() => navigate("/question")} name={"바로시작하기"} />}
         </IntroBlock>
     );
 };

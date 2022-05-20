@@ -31,7 +31,9 @@ const RadioType = ({ question, submitHandler, handleGoBack }) => {
                 {question.answerList.map((item, idx) => (
                     <label key={item.value}>
                         <input type="radio" name={`radio-${question.qId}`} value={item.value} onChange={onInputChange} checked={value === item.value} className="a11y" />
-                        <span className="label">{item.label}</span>
+                        <motion.span className="label" whileTap={{ scale: 0.99 }}>
+                            {item.label}
+                        </motion.span>
                     </label>
                 ))}
             </div>

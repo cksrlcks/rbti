@@ -1,11 +1,19 @@
 import { stringToArray, organizeArray, sortData } from "./utill";
 import { sort9Filter, sort10Filter } from "../data/filter";
+import { randomPick } from "../lib/utill";
+//const randomBagRmn = randomPick(rmnData, 30);
 
 class Rbti {
-    constructor(data) {
+    constructor() {}
+
+    set(data, questionList) {
+        this.answer = {}; //유저의 응답데이터 원본꾸러미
+        this.questionList = questionList;
         this.originRmnData = data; //결과페이지에서 라면seq로 참조할 원본데이터 (봉지라면전부)
         this.data = data; //eval을 통해 score주고, 삭제시킨 라면들 결과
-        this.answer = {}; //유저의 응답데이터 원본꾸러미
+        this.randomRmn = randomPick(this.originRmnData, 30);
+        //랜덤라면 질문에 집어넣기
+        this.questionList.find((item) => item.qId == 15).answerList = this.randomRmn;
     }
 
     eval(qid, value) {

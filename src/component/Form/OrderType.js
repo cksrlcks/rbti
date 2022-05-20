@@ -78,10 +78,14 @@ const OrderType = ({ question, submitHandler, handleGoBack }) => {
                             checked={item.checked ? true : false}
                             className="a11y"
                         />
-                        <span className="label">
+                        <motion.span className="label" whileTap={{ scale: 0.99 }}>
                             {item.label}
-                            {item.order && <i className="num">{item.order}</i>}
-                        </span>
+                            {item.order && (
+                                <motion.i className="num" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                                    {item.order}
+                                </motion.i>
+                            )}
+                        </motion.span>
                     </label>
                 ))}
             </div>

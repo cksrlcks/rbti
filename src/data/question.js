@@ -1,7 +1,3 @@
-import rmnData from "./ormnData";
-import { randomPick } from "../lib/utill";
-const randomBagRmn = randomPick(rmnData, 30);
-
 export const rmnQuestion = [
     {
         qId: 1,
@@ -367,6 +363,6 @@ export const rmnQuestion = [
         qType: "rmn_mulit",
         max: 3,
         title: "지금 제일 끌리는 라면을 선택해 주세요",
-        answerList: randomBagRmn,
+        answerList: [],
     },
 ];

@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import qs from "qs";
+import axios from "axios";
 import { stringToArray } from "../lib/utill";
 import Button from "../component/Buttons";
 import styled from "styled-components";
-import ormnData from "../data/ormnData";
-import { rmnQuestion as questionList } from "../data/question";
 import useBackListener from "../hooks/useBackListener";
+import { rmnQuestion } from "../data/question";
 
-const Result = ({ answer }) => {
+const Result = ({ rbti }) => {
     const navigate = useNavigate();
     const [result, setResult] = useState("");
     const [bestRmn, setBestRmn] = useState("");
@@ -34,11 +34,19 @@ const Result = ({ answer }) => {
     //쿼리스트링으로 넘어온 데이터에 있는 라면seq로, 라면데이터에서 라면찾아서 state업데이트 해주기
     //라면정보를 전부 URL에 담기힘들어서, seq만 전달받아서 다시찾기
     useEffect(() => {
+        if (!rbti || !rbti.originRmnData) {
+            //결과페이지만 보고 들어와서 rbti서비스 셋팅안되어잇으면 한번더 해주기
+            //text db사용중입니다
+            axios.get("/db.json").then((res) => {
+                rbti.set(res.data, rmnQuestion);
+            });
+        }
+
         if (result) {
             setBestRmn((prev) => {
                 let selected = [];
                 result.bestRmn.forEach((item) => {
-                    ormnData.forEach((ormnItem) => {
+                    rbti.originRmnData.forEach((ormnItem) => {
                         if (ormnItem.rmn_seq == item) {
                             selected.push(ormnItem);
                         }
@@ -50,7 +58,7 @@ const Result = ({ answer }) => {
             setOtherFvRmn((prev) => {
                 let selected = [];
                 result.otherFvRmn.forEach((item) => {
-                    ormnData.forEach((ormnItem) => {
+                    rbti.originRmnData.forEach((ormnItem) => {
                         if (ormnItem.rmn_seq == item) {
                             selected.push(ormnItem);
                         }
@@ -60,7 +68,7 @@ const Result = ({ answer }) => {
             });
 
             setAttrRmn((prev) => {
-                const attrRmnInfo = ormnData.find((ormnItem) => ormnItem.rmn_seq == result.attrRmn);
+                const attrRmnInfo = rbti.originRmnData.find((ormnItem) => ormnItem.rmn_seq == result.attrRmn);
                 return attrRmnInfo;
             });
         }
@@ -115,16 +123,16 @@ const Result = ({ answer }) => {
                             {result.answer.q7 == "순한맛" && "매운맛이 거의 없고"}
                         </div>
                         <div className="ment">
-                            <Answer qid={8} value={result.answer.q8} />도 딱이랍니다!
+                            <Answer rbti={rbti} qid={8} value={result.answer.q8} />도 딱이랍니다!
                         </div>
                         <br />
                         <div className="ment">
-                            게다가, <Answer qid={9} value={result.answer.q9} />이 이 라면의 매력 중 한가지이며,
+                            게다가, <Answer rbti={rbti} qid={9} value={result.answer.q9} />이 이 라면의 매력 중 한가지이며,
                         </div>
                         <div className="ment">
                             {result.answer.q1}님님이 맛있을 것 같다고 선택하신
                             <br />
-                            <Answer qid={10} value={result.answer.q10} /> <br />
+                            <Answer rbti={rbti} qid={10} value={result.answer.q10} /> <br />
                             바로 이 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이라구요!!
                         </div>
                         <div className="ment">
@@ -194,8 +202,8 @@ const Result = ({ answer }) => {
 
 export default Result;
 
-const Answer = ({ qid, value }) => {
-    const answerList = questionList.find((question) => question.qId == qid).answerList;
+const Answer = ({ qid, value, rbti }) => {
+    const answerList = rbti.questionList.find((question) => question.qId == qid).answerList;
     let label;
 
     answerList.find((answer) => {
