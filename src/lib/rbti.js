@@ -1,7 +1,6 @@
 import { stringToArray, organizeArray, sortData } from "./utill";
 import { sort9Filter, sort10Filter } from "../data/filter";
 import { randomPick } from "../lib/utill";
-//const randomBagRmn = randomPick(rmnData, 30);
 
 class Rbti {
     constructor() {}

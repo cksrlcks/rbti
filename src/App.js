@@ -18,11 +18,6 @@ function App({ rbti }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        //라면데이터 들고와서 rbti서비스 만들어서 state화 해주기
-        //원하는곳에서 rbti클래스의 메서드 쓸수잇음
-        //rmnData넣어서 인스터스 생성 필요한데, 데이터는 임시로 db에서 json파일 뽑아서 사용했음,
-        //실제로는 서버에서 가져와서 넣어줘야함 (각 라면을 좋아하는 사람수등의 데이터 필요)
-
         //라면데이타 필요한 값
         // 1. pkgSeq //채식라면구별용
         // 2. rmn_nm

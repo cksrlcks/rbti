@@ -6,6 +6,8 @@ import "../src/assets/scss/style.scss";
 import Rbti from "./lib/rbti";
 
 const rbti = new Rbti();
+//rbti.set(rmn_data, question) //라면데이터, 질문셋팅
+//rbti.eval(answer) //평가
 
 const root = ReactDOM.createRoot(document.getElementById("rbti-root"));
 root.render(<App rbti={rbti} />);
