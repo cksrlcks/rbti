@@ -26,6 +26,7 @@ const Loading = ({ answer, rbti }) => {
 
         //서버로 보내서 평가받아옴 (axios요청구간, 일단 임시로 3초후)
         console.log("서버로 보낼 응답데이터", evalValues);
+
         setTimeout(() => {
             //질문응답+서버응답 가지고 result state 업데이트
             stringified = qs.stringify(evalValues);
@@ -41,8 +42,6 @@ const Loading = ({ answer, rbti }) => {
         <LoadingBox>
             잠시만 기다려주세요
             <br /> {`${answer[1]}님의`} 라면박스를 조립중입니다
-            <br />
-            <br /> (서버로 설문데이터꾸러미 보냅니다. 3초후 랜더링)
         </LoadingBox>
     );
 };
