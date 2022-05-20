@@ -7,6 +7,7 @@ import Button from "../component/Buttons";
 import styled from "styled-components";
 import useBackListener from "../hooks/useBackListener";
 import { rmnQuestion } from "../data/question";
+import { motion } from "framer-motion";
 
 const Result = ({ rbti }) => {
     const navigate = useNavigate();
@@ -72,7 +73,7 @@ const Result = ({ rbti }) => {
                 return attrRmnInfo;
             });
         }
-    }, [result]);
+    }, [result, rbti]);
 
     //라면정보에 들어있는 br태그등을 주입하기 위해서
     const createMarkup = (string) => {
@@ -86,7 +87,7 @@ const Result = ({ rbti }) => {
     return (
         <>
             {result && bestRmn.length && otherFvRmn.length && (
-                <ResultForm>
+                <ResultForm as={motion.div} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                     <div className="result-top">
                         <div className="title">
                             <div className="title-find">찾았어요!!!</div>
@@ -162,7 +163,9 @@ const Result = ({ rbti }) => {
                         <a href="https://www.oramyun.com/view.do?no=23" target="_blank">
                             이 조합으로 먹어보기
                         </a>
-                        <a href="https://www.oramyun.com/view.do?no=23">내가 직접 다시 고르기</a>
+                        <a href="https://www.oramyun.com/view.do?no=23" target="_blank">
+                            내가 직접 다시 고르기
+                        </a>
                         <Button name="다시하기" onClick={() => navigate("/")} />
                     </div>
                     <div className="other">

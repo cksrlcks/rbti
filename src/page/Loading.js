@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import CircleProgressBar from "../component/ProgressCircle";
 import styled from "styled-components";
 import qs from "qs";
 
@@ -40,6 +41,7 @@ const Loading = ({ answer, rbti }) => {
 
     return (
         <LoadingBox>
+            <CircleProgressBar trailStrokeColor="gray" strokeColor="teal" percentage={100} speed={4} innerText="complete" />
             잠시만 기다려주세요
             <br /> {`${answer[1]}님의`} 라면박스를 조립중입니다
         </LoadingBox>
@@ -54,4 +56,9 @@ const LoadingBox = styled.div`
     align-items: center;
     justify-content: center;
     text-align: center;
+    flex-direction: column;
+    line-height: 1.4;
+    color: #000;
+    font-weight: 700;
+    font-size: 24px;
 `;

@@ -58,6 +58,7 @@ function App({ rbti }) {
                     <ScrollTop />
                     <Routes>
                         <Route path="*" element={<ErrorPage />} />
+                        {/* <Route path="/" element={<Test userCount={userCount} loading={loading} />} /> */}
                         <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
                         <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} />} />
                         <Route path="/loading" element={<Loading rbti={rbti} answer={answer} />} />
