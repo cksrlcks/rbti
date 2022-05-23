@@ -4,10 +4,8 @@ import styledComponents from "styled-components";
 import QuestionForm from "../component/Form/QuestionForm";
 import ProgressBar from "../component/ProgressBar";
 
-const Question = ({ updateAnswer, rbti, deleteAnswer }) => {
+const Question = ({ question, updateAnswer, deleteAnswer, questionNumber }) => {
     const navigate = useNavigate();
-    const [questionNumber, setQuestionNumber] = useState(1);
-    const [question, setQuestion] = useState(rbti.questionList);
 
     useEffect(() => {
         //뒤로가기 방지
@@ -28,31 +26,12 @@ const Question = ({ updateAnswer, rbti, deleteAnswer }) => {
         }
     }, [question]);
 
-    useEffect(() => {
-        if (questionNumber == 0) {
-            rbti.reset();
-        }
-    }, [questionNumber]);
-
     const handleAnswer = (qid, value) => {
         updateAnswer(qid, value);
-        setTimeout(function () {
-            if (questionNumber > question.length - 1) {
-                navigate("/loading", { state: { done: true } });
-                return;
-            } else {
-                setQuestionNumber((prev) => prev + 1);
-            }
-        });
     };
 
     const handleGoBack = () => {
         deleteAnswer(questionNumber);
-        if (questionNumber - 1 < 1) {
-            setQuestionNumber((prev) => 1);
-        } else {
-            setQuestionNumber((prev) => prev - 1);
-        }
     };
 
     return (

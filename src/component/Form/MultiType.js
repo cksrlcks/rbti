@@ -76,7 +76,7 @@ const MultiType = ({ question, submitHandler, handleGoBack }) => {
 
     const onSubmit = () => {
         if (!value.includes("없어요") && !value.includes("안 먹어요")) {
-            if (value.length < question.max) {
+            if (!value.length) {
                 alert("선택해주세요");
                 return;
             }

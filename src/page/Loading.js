@@ -4,10 +4,12 @@ import { useLocation } from "react-router-dom";
 import CircleProgressBar from "../component/ProgressCircle";
 import styled from "styled-components";
 import qs from "qs";
+import { sortData, stringToArray } from "../lib/utill";
 
-const Loading = ({ answer, rbti }) => {
+const Loading = ({ rbti, answer, data, originData, question }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [result, setResult] = useState("");
 
     useEffect(() => {
         let stringified;
@@ -17,14 +19,72 @@ const Loading = ({ answer, rbti }) => {
             return;
         }
 
-        //rbti클래스에서 응답결과로 평가시작
-        const evalValues = rbti.result();
+        const bestRmn = sortData(data, "score", "desc")
+            .map((item, idx) => item.rmn_seq)
+            .slice(0, 5);
 
-        //서버로 보내서 평가받아옴 (axios요청구간)
-        console.log("서버로 보낼 응답데이터", evalValues);
+        const bestRmnRank = sortData(originData, "sellNum", "desc").find((item) => item.rmn_seq == bestRmn[0]).sellNum;
+
+        const otherFvRmn = sortData(originData, "fvNum", "desc")
+            .map((item, idx) => item.rmn_seq)
+            .slice(0, 4);
+
+        //끌리는 라면의 공통점찾기
+        const evalAttrRmn = (seqArray) => {
+            let tags = [];
+
+            seqArray.forEach((seq) => {
+                originData.forEach((ormn) => {
+                    if (seq == ormn.rmn_seq) {
+                        let selectedTags = stringToArray(ormn.rmn_tag);
+                        tags = [...tags, ...selectedTags];
+                    }
+                });
+            });
+
+            //tags배열 중복제거
+            let newTags = new Set(tags);
+
+            //seqArray에 점수주기
+            const list = seqArray.map((seq) => {
+                let score = 0;
+                newTags.forEach((tag) => {
+                    originData.forEach((ormn) => {
+                        if (ormn.rmn_seq == seq && ormn.rmn_tag.includes(tag)) {
+                            score++;
+                        }
+                    });
+                });
+
+                return {
+                    rmn_seq: seq,
+                    score: score,
+                };
+            });
+
+            //score제일 큰 항목 찾기
+            const max = list.reduce(function (prev, current) {
+                return prev.score > current.score ? prev : current;
+            });
+
+            return max.rmn_seq;
+        };
+
+        const attrRmn = evalAttrRmn(answer[15]);
+
+        const resultSet = {
+            answer: answer,
+            bestRmn: bestRmn,
+            bestRmnRank: bestRmnRank,
+            attrRmn: attrRmn,
+            otherFvRmn: otherFvRmn,
+        };
+
+        //서버로 보냄(axios요청구간)
+        console.log("서버로 보낼 응답데이터", resultSet);
 
         setTimeout(() => {
-            stringified = qs.stringify(evalValues);
+            stringified = qs.stringify(resultSet);
             if (!stringified) {
                 navigate("/");
             }

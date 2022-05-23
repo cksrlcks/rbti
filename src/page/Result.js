@@ -6,10 +6,10 @@ import { stringToArray } from "../lib/utill";
 import Button from "../component/Buttons";
 import styled from "styled-components";
 import useBackListener from "../hooks/useBackListener";
-import { rmnQuestion } from "../data/question";
+import { rmnQuestion as question } from "../data/question";
 import { motion } from "framer-motion";
 
-const Result = ({ rbti, setRank }) => {
+const Result = ({ originData, setOriginData, setQuestion }) => {
     const navigate = useNavigate();
     const [result, setResult] = useState("");
     const [bestRmn, setBestRmn] = useState("");
@@ -35,11 +35,10 @@ const Result = ({ rbti, setRank }) => {
     //쿼리스트링으로 넘어온 데이터에 있는 라면seq로, 라면데이터에서 라면찾아서 state업데이트 해주기
     //라면정보를 전부 URL에 담기힘들어서, seq만 전달받아서 다시찾기
     useEffect(() => {
-        if (!rbti || !rbti.originRmnData) {
-            //결과페이지만 보고 들어와서 rbti서비스 셋팅안되어잇으면 한번더 해주기
-            //test db사용중입니다
+        //결과페이지만 보고 들어와서 셋팅안되어잇으면 한번더 해주기
+        if (!originData) {
             axios.get("/db.json").then((res) => {
-                rbti.set(res.data, rmnQuestion);
+                setOriginData(res.data);
             });
         }
 
@@ -47,7 +46,7 @@ const Result = ({ rbti, setRank }) => {
             setBestRmn((prev) => {
                 let selected = [];
                 result.bestRmn.forEach((item) => {
-                    rbti.originRmnData.forEach((ormnItem) => {
+                    originData.forEach((ormnItem) => {
                         if (ormnItem.rmn_seq == item) {
                             selected.push(ormnItem);
                         }
@@ -59,7 +58,7 @@ const Result = ({ rbti, setRank }) => {
             setOtherFvRmn((prev) => {
                 let selected = [];
                 result.otherFvRmn.forEach((item) => {
-                    rbti.originRmnData.forEach((ormnItem) => {
+                    originData.forEach((ormnItem) => {
                         if (ormnItem.rmn_seq == item) {
                             selected.push(ormnItem);
                         }
@@ -69,11 +68,11 @@ const Result = ({ rbti, setRank }) => {
             });
 
             setAttrRmn((prev) => {
-                const attrRmnInfo = rbti.originRmnData.find((ormnItem) => ormnItem.rmn_seq == result.attrRmn);
+                const attrRmnInfo = originData.find((ormnItem) => ormnItem.rmn_seq == result.attrRmn);
                 return attrRmnInfo;
             });
         }
-    }, [result, rbti]);
+    }, [result, originData]);
 
     //라면정보에 들어있는 br태그등을 주입하기 위해서
     const createMarkup = (string) => {
@@ -85,8 +84,7 @@ const Result = ({ rbti, setRank }) => {
     };
 
     const goHome = () => {
-        setRank(rbti.originRmnData);
-        navigate("/");
+        window.location.replace("/");
     };
 
     return (
@@ -96,7 +94,7 @@ const Result = ({ rbti, setRank }) => {
                     <div className="result-top">
                         <div className="title">
                             <div className="title-find">찾았어요!!!</div>
-                            <div className="title-name">{result.answer.q1}님이 제일 좋아하실만한 라면!</div>
+                            <div className="title-name">{result.answer[1]}님이 제일 좋아하실만한 라면!</div>
                             <div className="title-rmn">
                                 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이에요!
                             </div>
@@ -124,29 +122,29 @@ const Result = ({ rbti, setRank }) => {
                             해당 제품은 오늘의라면에서 {result.bestRmnRank}번째로 <br />잘 나가는 라면이예요😎
                         </div>
                         <div className="ment">
-                            {result.answer.q7 == "매운맛" && "쓰읍하- 화끈한 매운맛에"}
-                            {result.answer.q7 == "보통맛" && "딱 좋은 보통 맵기에"}
-                            {result.answer.q7 == "순한맛" && "매운맛이 거의 없고"}
+                            {result.answer[7] == "매운맛" && "쓰읍하- 화끈한 매운맛에"}
+                            {result.answer[7] == "보통맛" && "딱 좋은 보통 맵기에"}
+                            {result.answer[7] == "순한맛" && "매운맛이 거의 없고"}
                         </div>
                         <div className="ment">
-                            <Answer rbti={rbti} qid={8} value={result.answer.q8} />도 딱이랍니다!
+                            <Answer question={question} qid={8} value={result.answer[8]} />도 딱이랍니다!
                         </div>
                         <br />
                         <div className="ment">
-                            게다가, <Answer rbti={rbti} qid={9} value={result.answer.q9} />이 이 라면의 매력 중 한가지이며,
+                            게다가, <Answer question={question} qid={9} value={result.answer[9]} />이 이 라면의 매력 중 한가지이며,
                         </div>
                         <div className="ment">
-                            {result.answer.q1}님님이 맛있을 것 같다고 선택하신
+                            {result.answer[1]}님님이 맛있을 것 같다고 선택하신
                             <br />
-                            <Answer rbti={rbti} qid={10} value={result.answer.q10} /> <br />
+                            <Answer question={question} qid={10} value={result.answer[10]} /> <br />
                             바로 이 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이라구요!!
                         </div>
                         <div className="ment">
                             그리고 지금 제일 끌리시는 {attrRmn.rmn_nm}과(와) {attrRmn.rmn_tag}의 공통점을 가졌어요
                         </div>
                         <div className="ment">
-                            {result.answer.q13.length && <>자주 곁들여 드시는 {result.answer.q13.toString()}과(와)도 잘 어울리며, </>}
-                            {result.answer.q14.length && <>지금 냉장고에 있는 {result.answer.q14.toString()}을(를) 넣어드셔도 꿀맛이랍니당👍 </>}
+                            {result.answer[13].length && <>자주 곁들여 드시는 {result.answer[13].toString()}과(와)도 잘 어울리며, </>}
+                            {result.answer[14].length && <>지금 냉장고에 있는 {result.answer[14].toString()}을(를) 넣어드셔도 꿀맛이랍니당👍 </>}
                         </div>
                     </div>
                     <div className="rmn-list">
@@ -210,8 +208,8 @@ const Result = ({ rbti, setRank }) => {
 
 export default Result;
 
-const Answer = ({ qid, value, rbti }) => {
-    const answerList = rbti.questionList.find((question) => question.qId == qid).answerList;
+const Answer = ({ qid, value, question }) => {
+    const answerList = question.find((question) => question.qId == qid).answerList;
     let label;
 
     answerList.find((answer) => {

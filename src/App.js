@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ThemeProvider } from "styled-components";
 
@@ -12,51 +12,56 @@ import ErrorPage from "./page/404";
 import { rmnQuestion } from "./data/question";
 import ScrollTop from "./component/ScrollTop";
 import RmnScoreBoard from "./component/ScoreBoard";
-import { sortData } from "./lib/utill";
+import { randomPick } from "./lib/utill";
 
 function App({ rbti }) {
+    const navigate = useNavigate();
+    const [questionNumber, setQuestionNumber] = useState(1);
+    const [data, setData] = useState([]);
+    const [originData, setOriginData] = useState([]);
     const [answer, setAnswer] = useState([]);
+    const [question, setQuestion] = useState("");
     const [userCount, setUserCount] = useState("");
     const [loading, setLoading] = useState(true);
-    const [rank, setRank] = useState([]);
+
     const theme = {
         primaryColor: "#f44502",
         secondaryColor: "#06377b",
     };
 
     useEffect(() => {
-        //설문참여한 사람수 가져와야함(axios)
-        //임의로 숫자 넣음
-        setUserCount(2025);
-    }, []);
-
-    useEffect(() => {
-        //라면데이타 필요한 값
-        // 1. pkgSeq //채식라면구별용
-        // 2. rmn_nm
-        // 3. rmn_seq
-        // 4. rmn_info
-        // 5. rnm_tag
-        // 6. new_yn
-        // 7. mnfctr_nm
-        // 8. pgm_file_id or Img Path : 이미지URL만 주는게 제일좋은
-        // 9. fvNum //좋아하는 숫자
-
         //axios로 실서버에서 데이터 가져오기 (실운용시)
-        axios
-            .get("/db.json")
-            .then((res) => {
-                setLoading(false);
-                rbti.set(res.data, rmnQuestion);
-            })
-            .then(() => {
-                setRank((prev) => rbti.data);
+        axios.get("/db.json").then((res) => {
+            setLoading(false);
+            setData(res.data);
+            setOriginData(res.data);
+
+            setQuestion((prev) => {
+                const formattedQuestion = rmnQuestion.map((item) => {
+                    if (item.qId == 15) {
+                        return { ...item, answerList: [...randomPick(res.data, 30)] };
+                    } else {
+                        return item;
+                    }
+                });
+                return formattedQuestion;
             });
+        });
+
+        //유저수 업데이트
+        setUserCount(2025);
     }, []);
 
     const updateAnswer = (qid, value) => {
         const newAnswer = { [qid]: value };
         setAnswer((prev) => ({ ...prev, ...newAnswer }));
+
+        if (questionNumber > question.length - 1) {
+            navigate("/loading", { state: { done: true } });
+            return;
+        } else {
+            setQuestionNumber((prev) => prev + 1);
+        }
     };
 
     const deleteAnswer = (num) => {
@@ -66,11 +71,17 @@ function App({ rbti }) {
 
             return newAnswer;
         });
+
+        if (questionNumber - 1 < 1) {
+            setQuestionNumber((prev) => 1);
+        } else {
+            setQuestionNumber((prev) => prev - 1);
+        }
     };
 
     useEffect(() => {
-        const newData = rbti.test(answer);
-        setRank((prev) => sortData(newData, "score", "desc"));
+        const newData = rbti.test(originData, answer);
+        setData([...newData]);
     }, [answer]);
 
     return (
@@ -78,20 +89,18 @@ function App({ rbti }) {
             <AppWrapper>
                 <div className="left">
                     <div className="rmn-app">
-                        <Router>
-                            <ScrollTop />
-                            <Routes>
-                                <Route path="*" element={<ErrorPage />} />
-                                <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
-                                <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} />} />
-                                <Route path="/loading" element={<Loading rbti={rbti} answer={answer} />} />
-                                <Route path="/result" element={<Result rbti={rbti} answer={answer} setRank={setRank} />} />
-                            </Routes>
-                        </Router>
+                        <ScrollTop />
+                        <Routes>
+                            <Route path="*" element={<ErrorPage />} />
+                            <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
+                            <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} question={question} questionNumber={questionNumber} />} />
+                            <Route path="/loading" element={<Loading rbti={rbti} answer={answer} data={data} originData={originData} question={question} />} />
+                            <Route path="/result" element={<Result rbti={rbti} answer={answer} originData={originData} />} setQuestion={setQuestion} setOriginData={setOriginData} />
+                        </Routes>
                     </div>
                 </div>
                 <div className="right">
-                    <RmnScoreBoard rank={rank} />
+                    <RmnScoreBoard data={data} />
                 </div>
             </AppWrapper>
         </ThemeProvider>
