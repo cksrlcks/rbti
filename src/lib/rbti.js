@@ -142,14 +142,14 @@ class Rbti {
                     //가성비좋은라면 선택하면 할 행동 (아직 없음)
                 } else if (value == "신상라면") {
                     this.data.forEach((data) => {
-                        if (data.new_yn == "Y") {
+                        if (data.rmn_tag.includes("신제품")) {
                             const prevScore = data.score;
                             data.score = prevScore + 1;
                         }
                     });
                 } else if (value == "인기라면") {
                     this.data.forEach((data) => {
-                        if (data.rcmd_yn == "Y") {
+                        if (data.rmn_tag.includes("스테디셀러")) {
                             const prevScore = data.score;
                             data.score = prevScore + 1;
                         }
