@@ -16,10 +16,17 @@ const Result = ({ originData, setOriginData, setQuestion }) => {
     const [otherFvRmn, setOtherFvRmn] = useState("");
     const [attrRmn, setAttrRmn] = useState("");
     const parsedString = qs.parse(window.location.search, { ignoreQueryPrefix: true });
-    useBackListener(() => {
-        //뒤로가기시 브라우저의 뒤로가기 가로채기
-        navigate("/");
-    });
+    useEffect(() => {
+        //뒤로가기 방지
+        const preventGoBack = () => {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", preventGoBack);
+
+        return () => window.removeEventListener("popstate", preventGoBack);
+    }, []);
 
     //결과공유를 위해 응답결과를 URL 스트링으로 저장한걸 들고와서 state업데이트 해주기
     //쿼리 스트링 없으면 검사시작화면으로 보내주기
@@ -41,7 +48,7 @@ const Result = ({ originData, setOriginData, setQuestion }) => {
                 setOriginData(res.data);
             });
         }
-
+        console.log(result);
         if (result) {
             setBestRmn((prev) => {
                 let selected = [];
@@ -94,7 +101,7 @@ const Result = ({ originData, setOriginData, setQuestion }) => {
                     <div className="result-top">
                         <div className="title">
                             <div className="title-find">찾았어요!!!</div>
-                            <div className="title-name">{result.answer[1]}님이 제일 좋아하실만한 라면!</div>
+                            <div className="title-name">{result.answer[0]}님이 제일 좋아하실만한 라면!</div>
                             <div className="title-rmn">
                                 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이에요!
                             </div>
@@ -122,29 +129,29 @@ const Result = ({ originData, setOriginData, setQuestion }) => {
                             해당 제품은 오늘의라면에서 {result.bestRmnRank}번째로 <br />잘 나가는 라면이예요😎
                         </div>
                         <div className="ment">
-                            {result.answer[7] == "매운맛" && "쓰읍하- 화끈한 매운맛에"}
-                            {result.answer[7] == "보통맛" && "딱 좋은 보통 맵기에"}
-                            {result.answer[7] == "순한맛" && "매운맛이 거의 없고"}
+                            {result.answer[6] == "매운맛" && "쓰읍하- 화끈한 매운맛에"}
+                            {result.answer[6] == "보통맛" && "딱 좋은 보통 맵기에"}
+                            {result.answer[6] == "순한맛" && "매운맛이 거의 없고"}
                         </div>
                         <div className="ment">
-                            <Answer question={question} qid={8} value={result.answer[8]} />도 딱이랍니다!
+                            <Answer question={question} qid={8} value={result.answer[7]} />도 딱이랍니다!
                         </div>
                         <br />
                         <div className="ment">
-                            게다가, <Answer question={question} qid={9} value={result.answer[9]} />이 이 라면의 매력 중 한가지이며,
+                            게다가, <Answer question={question} qid={9} value={result.answer[8]} />이 이 라면의 매력 중 한가지이며,
                         </div>
                         <div className="ment">
-                            {result.answer[1]}님님이 맛있을 것 같다고 선택하신
+                            {result.answer[0]}님님이 맛있을 것 같다고 선택하신
                             <br />
-                            <Answer question={question} qid={10} value={result.answer[10]} /> <br />
+                            <Answer question={question} qid={10} value={result.answer[9]} /> <br />
                             바로 이 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이라구요!!
                         </div>
                         <div className="ment">
                             그리고 지금 제일 끌리시는 {attrRmn.rmn_nm}과(와) {attrRmn.rmn_tag}의 공통점을 가졌어요
                         </div>
                         <div className="ment">
-                            {result.answer[13].length && <>자주 곁들여 드시는 {result.answer[13].toString()}과(와)도 잘 어울리며, </>}
-                            {result.answer[14].length && <>지금 냉장고에 있는 {result.answer[14].toString()}을(를) 넣어드셔도 꿀맛이랍니당👍 </>}
+                            {result.answer[12].length && <>자주 곁들여 드시는 {result.answer[12].toString()}과(와)도 잘 어울리며, </>}
+                            {result.answer[13].length && <>지금 냉장고에 있는 {result.answer[13].toString()}을(를) 넣어드셔도 꿀맛이랍니당👍 </>}
                         </div>
                     </div>
                     <div className="rmn-list">
