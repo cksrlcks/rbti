@@ -49,8 +49,8 @@ class Rbti {
                 items.forEach((item, idx) => {
                     this.data.forEach((data) => {
                         if (data.rmn_tag.includes(item)) {
-                            const prevScroe = data.score;
-                            data.score = prevScroe + itemLength - idx;
+                            const prevScore = data.score;
+                            data.score = prevScore + itemLength - idx;
                         }
                     });
                 });
@@ -65,14 +65,14 @@ class Rbti {
                 */
                 if (value == "모두") {
                     this.data.forEach((data) => {
-                        const prevScroe = data.score;
-                        data.score = prevScroe + 1;
+                        const prevScore = data.score;
+                        data.score = prevScore + 1;
                     });
                 } else {
                     this.data.forEach((data) => {
                         if (data.rmn_tag.includes(value)) {
-                            const prevScroe = data.score;
-                            data.score = prevScroe + 2;
+                            const prevScore = data.score;
+                            data.score = prevScore + 2;
                         }
                     });
 
@@ -91,8 +91,8 @@ class Rbti {
                 */
                 if (value == "모두") {
                     this.data.forEach((data) => {
-                        const prevScroe = data.score;
-                        data.score = prevScroe + 1;
+                        const prevScore = data.score;
+                        data.score = prevScore + 1;
                     });
                 } else {
                     const valueArray = stringToArray(value);
@@ -100,8 +100,8 @@ class Rbti {
                     this.data.forEach((data) => {
                         valueArray.forEach((valueItem) => {
                             if (data.rmn_tag.includes(valueItem)) {
-                                const prevScroe = data.score;
-                                data.score = prevScroe + 1;
+                                const prevScore = data.score;
+                                data.score = prevScore + 1;
                                 //한번 햇으면 forEach break하고 다음 라면 아이템 가기(foreach escape)
                                 return false;
                             }
@@ -119,8 +119,8 @@ class Rbti {
                         item.items.forEach((item) => {
                             this.data.forEach((data) => {
                                 if (data.rmn_seq == item) {
-                                    const prevScroe = data.score;
-                                    data.score = prevScroe + 1;
+                                    const prevScore = data.score;
+                                    data.score = prevScore + 1;
                                 }
                             });
                         });
@@ -137,8 +137,8 @@ class Rbti {
                         item.items.forEach((item) => {
                             this.data.forEach((data) => {
                                 if (data.rmn_seq == item) {
-                                    const prevScroe = data.score;
-                                    data.score = prevScroe + 5;
+                                    const prevScore = data.score;
+                                    data.score = prevScore + 5;
                                 }
                             });
                         });
@@ -150,8 +150,8 @@ class Rbti {
                         item.items.forEach((item) => {
                             this.data.forEach((data) => {
                                 if (data.rmn_seq == item) {
-                                    const prevScroe = data.score;
-                                    data.score = prevScroe + 4;
+                                    const prevScore = data.score;
+                                    data.score = prevScore + 4;
                                 }
                             });
                         });
@@ -163,8 +163,8 @@ class Rbti {
                         item.items.forEach((item) => {
                             this.data.forEach((data) => {
                                 if (data.rmn_seq == item) {
-                                    const prevScroe = data.score;
-                                    data.score = prevScroe + 3;
+                                    const prevScore = data.score;
+                                    data.score = prevScore + 3;
                                 }
                             });
                         });
@@ -191,13 +191,15 @@ class Rbti {
                         }
                     });
                 } else if (value == "채식성분 라면") {
+                    console.log(value);
                     //채식만 보여주니까 너무 없어짐
                     //this.data = this.data.filter((data) => data.pkgSeq == "22");
 
                     //채식에 20점 추가로 임시조치
                     this.data.forEach((data) => {
-                        if (data.pkgSeq == "22") {
-                            const prevScore = data.scroe;
+                        if (data.pkgSeq == 22 || data.pkgSeq == 18) {
+                            console.log(data.pkgSeq);
+                            const prevScore = data.score;
                             data.score = prevScore + 20;
                         }
                     });
@@ -207,8 +209,8 @@ class Rbti {
                     this.data.forEach((data) => {
                         testValue.forEach((valueItem) => {
                             if (data.rmn_tag.includes(valueItem)) {
-                                const prevScroe = data.score;
-                                data.score = prevScroe + 1;
+                                const prevScore = data.score;
+                                data.score = prevScore + 1;
                                 //한번 햇으면 forEach break하고 다음 라면 아이템 가기
                                 return false;
                             }
@@ -222,13 +224,13 @@ class Rbti {
                 if (value == "네") {
                     this.data.forEach((data) => {
                         if (data.rmn_tag.includes("이색라면")) {
-                            const prevScroe = data.score;
-                            data.score = prevScroe + 1;
+                            const prevScore = data.score;
+                            data.score = prevScore + 1;
                         }
 
                         if (data.new_yn == "Y") {
-                            const prevScroe = data.score;
-                            data.score = prevScroe + 1;
+                            const prevScore = data.score;
+                            data.score = prevScore + 1;
                         }
                     });
                 } else if (value == "아니요") {
@@ -236,8 +238,8 @@ class Rbti {
                     this.data = this.data.filter((data) => data.new_yn != "Y");
                 } else if (value == "모두") {
                     this.data.forEach((data) => {
-                        const prevScroe = data.score;
-                        data.score = prevScroe + 1;
+                        const prevScore = data.score;
+                        data.score = prevScore + 1;
                     });
                 }
 
@@ -292,8 +294,8 @@ class Rbti {
                 this.data.forEach((data) => {
                     fvRmnTag.forEach((tag) => {
                         if (data.rmn_tag.includes(tag)) {
-                            const prevScroe = data.score;
-                            data.score = prevScroe + 1;
+                            const prevScore = data.score;
+                            data.score = prevScore + 1;
                         }
                     });
                 });
