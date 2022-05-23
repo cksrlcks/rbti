@@ -9,7 +9,7 @@ import useBackListener from "../hooks/useBackListener";
 import { rmnQuestion } from "../data/question";
 import { motion } from "framer-motion";
 
-const Result = ({ rbti }) => {
+const Result = ({ rbti, setRank }) => {
     const navigate = useNavigate();
     const [result, setResult] = useState("");
     const [bestRmn, setBestRmn] = useState("");
@@ -82,6 +82,11 @@ const Result = ({ rbti }) => {
 
     const createImgUrl = (name) => {
         return `https://www.oramyun.com/data/SITE000001/ORMN_RMN/${name}.png`;
+    };
+
+    const goHome = () => {
+        setRank(rbti.originRmnData);
+        navigate("/");
     };
 
     return (
@@ -166,7 +171,7 @@ const Result = ({ rbti }) => {
                         <a href="https://www.oramyun.com/view.do?no=23" target="_blank">
                             내가 직접 다시 고르기
                         </a>
-                        <Button name="다시하기" onClick={() => navigate("/")} />
+                        <Button name="다시하기" onClick={() => goHome()} />
                     </div>
                     <div className="other">
                         <div className="other-ment">

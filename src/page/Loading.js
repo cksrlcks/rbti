@@ -18,12 +18,7 @@ const Loading = ({ answer, rbti }) => {
         }
 
         //rbti클래스에서 응답결과로 평가시작
-        const evalValues = rbti.result(
-            Object.keys(answer).map((key) => ({
-                qid: +key,
-                value: answer[key],
-            }))
-        );
+        const evalValues = rbti.result();
 
         //서버로 보내서 평가받아옴 (axios요청구간)
         console.log("서버로 보낼 응답데이터", evalValues);
@@ -36,7 +31,7 @@ const Loading = ({ answer, rbti }) => {
 
             navigate(`/result?${stringified}`);
         }, 3000);
-    }, []);
+    }, [answer]);
 
     return (
         <LoadingBox>

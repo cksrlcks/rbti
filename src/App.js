@@ -12,11 +12,23 @@ import ErrorPage from "./page/404";
 import { rmnQuestion } from "./data/question";
 import ScrollTop from "./component/ScrollTop";
 import RmnScoreBoard from "./component/ScoreBoard";
+import { sortData } from "./lib/utill";
 
 function App({ rbti }) {
     const [answer, setAnswer] = useState([]);
     const [userCount, setUserCount] = useState("");
     const [loading, setLoading] = useState(true);
+    const [rank, setRank] = useState([]);
+    const theme = {
+        primaryColor: "#f44502",
+        secondaryColor: "#06377b",
+    };
+
+    useEffect(() => {
+        //설문참여한 사람수 가져와야함(axios)
+        //임의로 숫자 넣음
+        setUserCount(2025);
+    }, []);
 
     useEffect(() => {
         //라면데이타 필요한 값
@@ -31,30 +43,36 @@ function App({ rbti }) {
         // 9. fvNum //좋아하는 숫자
 
         //axios로 실서버에서 데이터 가져오기 (실운용시)
-        axios.get("/db.json").then((res) => {
-            setLoading(false);
-            rbti.set(res.data, rmnQuestion);
-        });
+        axios
+            .get("/db.json")
+            .then((res) => {
+                setLoading(false);
+                rbti.set(res.data, rmnQuestion);
+            })
+            .then(() => {
+                setRank((prev) => rbti.data);
+            });
     }, []);
 
     const updateAnswer = (qid, value) => {
         const newAnswer = { [qid]: value };
         setAnswer((prev) => ({ ...prev, ...newAnswer }));
-
-        //임시로 각 단계마다 체크, 최종은 마지막에서 모아서 체크
-        rbti.eval(qid, value);
     };
 
-    const theme = {
-        primaryColor: "#f44502",
-        secondaryColor: "#06377b",
+    const deleteAnswer = (num) => {
+        setAnswer((prev) => {
+            const newAnswer = { ...prev };
+            delete newAnswer[num - 1];
+
+            return newAnswer;
+        });
     };
 
     useEffect(() => {
-        //설문참여한 사람수 가져와야함(axios)
-        //임의로 숫자 넣음
-        setUserCount(2025);
-    }, []);
+        const newData = rbti.test(answer);
+        setRank((prev) => sortData(newData, "score", "desc"));
+    }, [answer]);
+
     return (
         <ThemeProvider theme={theme}>
             <AppWrapper>
@@ -65,15 +83,15 @@ function App({ rbti }) {
                             <Routes>
                                 <Route path="*" element={<ErrorPage />} />
                                 <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
-                                <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} />} />
+                                <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} />} />
                                 <Route path="/loading" element={<Loading rbti={rbti} answer={answer} />} />
-                                <Route path="/result" element={<Result rbti={rbti} answer={answer} />} />
+                                <Route path="/result" element={<Result rbti={rbti} answer={answer} setRank={setRank} />} />
                             </Routes>
                         </Router>
                     </div>
                 </div>
                 <div className="right">
-                    <RmnScoreBoard rbti={rbti} />
+                    <RmnScoreBoard rank={rank} />
                 </div>
             </AppWrapper>
         </ThemeProvider>

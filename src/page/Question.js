@@ -4,7 +4,7 @@ import styledComponents from "styled-components";
 import QuestionForm from "../component/Form/QuestionForm";
 import ProgressBar from "../component/ProgressBar";
 
-const Question = ({ updateAnswer, rbti, setDone }) => {
+const Question = ({ updateAnswer, rbti, deleteAnswer }) => {
     const navigate = useNavigate();
     const [questionNumber, setQuestionNumber] = useState(1);
     const [question, setQuestion] = useState(rbti.questionList);
@@ -36,16 +36,18 @@ const Question = ({ updateAnswer, rbti, setDone }) => {
 
     const handleAnswer = (qid, value) => {
         updateAnswer(qid, value);
-
-        if (questionNumber > question.length - 1) {
-            navigate("/loading", { state: { done: true } });
-            return;
-        } else {
-            setQuestionNumber((prev) => prev + 1);
-        }
+        setTimeout(function () {
+            if (questionNumber > question.length - 1) {
+                navigate("/loading", { state: { done: true } });
+                return;
+            } else {
+                setQuestionNumber((prev) => prev + 1);
+            }
+        });
     };
 
     const handleGoBack = () => {
+        deleteAnswer(questionNumber);
         if (questionNumber - 1 < 1) {
             setQuestionNumber((prev) => 1);
         } else {

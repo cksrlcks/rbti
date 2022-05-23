@@ -15,8 +15,8 @@ class Rbti {
         this.questionList.find((item) => item.qId == 15).answerList = this.randomRmn;
     }
 
-    reset() {
-        // this.data = this.originRmnData;
+    resetScore(array) {
+        array.forEach((item) => (item.score = 0));
     }
 
     eval(qid, value) {
@@ -54,6 +54,7 @@ class Rbti {
                         }
                     });
                 });
+
                 break;
 
             case 7:
@@ -131,13 +132,39 @@ class Rbti {
                 this.answer.q10 = value;
 
                 sort10Filter
-                    .filter((item) => item.key == value)
+                    .filter((item) => item.key == value[0])
                     .forEach((item) => {
                         item.items.forEach((item) => {
                             this.data.forEach((data) => {
                                 if (data.rmn_seq == item) {
                                     const prevScroe = data.score;
-                                    data.score = prevScroe + 1;
+                                    data.score = prevScroe + 5;
+                                }
+                            });
+                        });
+                    });
+
+                sort10Filter
+                    .filter((item) => item.key == value[1])
+                    .forEach((item) => {
+                        item.items.forEach((item) => {
+                            this.data.forEach((data) => {
+                                if (data.rmn_seq == item) {
+                                    const prevScroe = data.score;
+                                    data.score = prevScroe + 4;
+                                }
+                            });
+                        });
+                    });
+
+                sort10Filter
+                    .filter((item) => item.key == value[2])
+                    .forEach((item) => {
+                        item.items.forEach((item) => {
+                            this.data.forEach((data) => {
+                                if (data.rmn_seq == item) {
+                                    const prevScroe = data.score;
+                                    data.score = prevScroe + 3;
                                 }
                             });
                         });
@@ -319,11 +346,18 @@ class Rbti {
         }
     }
 
-    result(dataArray) {
-        //응답결과 한셋트씩 eval하기(qid, value 넘겨서)
-        // dataArray.forEach((data) => {
-        //     data.value && this.eval(data.qid, data.value);
-        // });
+    test(answer) {
+        const newData = this.data ? [...this.data] : [];
+        this.resetScore(this.data ? this.data : []);
+        for (const key in answer) {
+            this.eval(+key, answer[key]);
+        }
+
+        return newData;
+    }
+
+    result(answer) {
+        //this.test(answer);
 
         //베스트라면(유저응답에 따른) 5개선정 (seq배열만 전달)
         this.bestRmn = sortData(this.data, "score", "desc")
