@@ -37,7 +37,7 @@ const Result = ({ rbti }) => {
     useEffect(() => {
         if (!rbti || !rbti.originRmnData) {
             //결과페이지만 보고 들어와서 rbti서비스 셋팅안되어잇으면 한번더 해주기
-            //text db사용중입니다
+            //test db사용중입니다
             axios.get("/db.json").then((res) => {
                 rbti.set(res.data, rmnQuestion);
             });
