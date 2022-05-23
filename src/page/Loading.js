@@ -12,6 +12,18 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
     const [result, setResult] = useState("");
 
     useEffect(() => {
+        //뒤로가기 방지
+        const preventGoBack = () => {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", preventGoBack);
+
+        return () => window.removeEventListener("popstate", preventGoBack);
+    }, []);
+
+    useEffect(() => {
         let stringified;
         if (!location.state) {
             alert("설문을 위해 처음으로 돌아갑니다.");
@@ -19,10 +31,7 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
             return;
         }
 
-        const bestRmn = sortData(data, "score", "desc")
-            .map((item, idx) => item.rmn_seq)
-            .slice(0, 5);
-
+        const bestRmn = data.map((item, idx) => item.rmn_seq).slice(0, 5);
         const bestRmnRank = sortData(originData, "sellNum", "desc").find((item) => item.rmn_seq == bestRmn[0]).sellNum;
 
         const otherFvRmn = sortData(originData, "fvNum", "desc")
@@ -91,7 +100,7 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
 
             navigate(`/result?${stringified}`);
         }, 3000);
-    }, [answer]);
+    }, [answer, data]);
 
     return (
         <LoadingBox>

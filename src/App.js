@@ -12,7 +12,7 @@ import ErrorPage from "./page/404";
 import { rmnQuestion } from "./data/question";
 import ScrollTop from "./component/ScrollTop";
 import RmnScoreBoard from "./component/ScoreBoard";
-import { randomPick } from "./lib/utill";
+import { randomPick, sortData } from "./lib/utill";
 
 function App({ rbti }) {
     const navigate = useNavigate();
@@ -58,7 +58,7 @@ function App({ rbti }) {
 
         if (questionNumber > question.length - 1) {
             navigate("/loading", { state: { done: true } });
-            return;
+            setQuestionNumber((prev) => 1);
         } else {
             setQuestionNumber((prev) => prev + 1);
         }
@@ -81,7 +81,7 @@ function App({ rbti }) {
 
     useEffect(() => {
         const newData = rbti.test(originData, answer);
-        setData([...newData]);
+        setData((prev) => sortData(newData, "score", "desc"));
     }, [answer]);
 
     return (

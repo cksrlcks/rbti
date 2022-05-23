@@ -4,7 +4,7 @@ import { sortData } from "../../lib/utill";
 const ScoreBoard = ({ data }) => {
     return (
         <div>
-            {sortData(data, "score", "desc").map((item, idx) => (
+            {data.map((item, idx) => (
                 <div className="score-item" key={item.rmn_seq}>
                     {idx + 1}.{item.rmn_nm} : {item.score}
                 </div>
