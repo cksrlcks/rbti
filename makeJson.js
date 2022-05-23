@@ -26,7 +26,7 @@ const fullList = rmnData.rows.map((rmn, idx) => {
     };
 });
 
-const rmnList = JSON.stringify(fullList);
+const rmnList = JSON.stringify(fullList.filter((item) => item.cate1 === "0100000"));
 
 fs.writeFile("./public/db.json", rmnList, function (err) {
     if (err) console.log(err);
