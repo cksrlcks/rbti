@@ -91,9 +91,9 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
 
         //서버로 보냄(axios요청구간)
         console.log("서버로 보낼 응답데이터", resultSet);
+        stringified = qs.stringify(resultSet);
 
         setTimeout(() => {
-            stringified = qs.stringify(resultSet);
             if (!stringified) {
                 navigate("/");
             }
