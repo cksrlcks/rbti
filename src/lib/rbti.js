@@ -15,6 +15,10 @@ class Rbti {
         this.questionList.find((item) => item.qId == 15).answerList = this.randomRmn;
     }
 
+    reset() {
+        // this.data = this.originRmnData;
+    }
+
     eval(qid, value) {
         switch (qid) {
             case 1:
@@ -317,9 +321,9 @@ class Rbti {
 
     result(dataArray) {
         //응답결과 한셋트씩 eval하기(qid, value 넘겨서)
-        dataArray.forEach((data) => {
-            data.value && this.eval(data.qid, data.value);
-        });
+        // dataArray.forEach((data) => {
+        //     data.value && this.eval(data.qid, data.value);
+        // });
 
         //베스트라면(유저응답에 따른) 5개선정 (seq배열만 전달)
         this.bestRmn = sortData(this.data, "score", "desc")

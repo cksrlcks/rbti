@@ -25,11 +25,10 @@ const Loading = ({ answer, rbti }) => {
             }))
         );
 
-        //서버로 보내서 평가받아옴 (axios요청구간, 일단 임시로 3초후)
+        //서버로 보내서 평가받아옴 (axios요청구간)
         console.log("서버로 보낼 응답데이터", evalValues);
 
         setTimeout(() => {
-            //질문응답+서버응답 가지고 result state 업데이트
             stringified = qs.stringify(evalValues);
             if (!stringified) {
                 navigate("/");

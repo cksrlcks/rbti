@@ -28,6 +28,12 @@ const Question = ({ updateAnswer, rbti, setDone }) => {
         }
     }, [question]);
 
+    useEffect(() => {
+        if (questionNumber == 0) {
+            rbti.reset();
+        }
+    }, [questionNumber]);
+
     const handleAnswer = (qid, value) => {
         updateAnswer(qid, value);
 

@@ -11,6 +11,7 @@ import Intro from "./page/Intro";
 import ErrorPage from "./page/404";
 import { rmnQuestion } from "./data/question";
 import ScrollTop from "./component/ScrollTop";
+import RmnScoreBoard from "./component/ScoreBoard";
 
 function App({ rbti }) {
     const [answer, setAnswer] = useState([]);
@@ -39,6 +40,9 @@ function App({ rbti }) {
     const updateAnswer = (qid, value) => {
         const newAnswer = { [qid]: value };
         setAnswer((prev) => ({ ...prev, ...newAnswer }));
+
+        //임시로 각 단계마다 체크, 최종은 마지막에서 모아서 체크
+        rbti.eval(qid, value);
     };
 
     const theme = {
@@ -54,17 +58,23 @@ function App({ rbti }) {
     return (
         <ThemeProvider theme={theme}>
             <AppWrapper>
-                <Router>
-                    <ScrollTop />
-                    <Routes>
-                        <Route path="*" element={<ErrorPage />} />
-                        {/* <Route path="/" element={<Test userCount={userCount} loading={loading} />} /> */}
-                        <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
-                        <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} />} />
-                        <Route path="/loading" element={<Loading rbti={rbti} answer={answer} />} />
-                        <Route path="/result" element={<Result rbti={rbti} answer={answer} />} />
-                    </Routes>
-                </Router>
+                <div className="left">
+                    <div className="rmn-app">
+                        <Router>
+                            <ScrollTop />
+                            <Routes>
+                                <Route path="*" element={<ErrorPage />} />
+                                <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
+                                <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} />} />
+                                <Route path="/loading" element={<Loading rbti={rbti} answer={answer} />} />
+                                <Route path="/result" element={<Result rbti={rbti} answer={answer} />} />
+                            </Routes>
+                        </Router>
+                    </div>
+                </div>
+                <div className="right">
+                    <RmnScoreBoard rbti={rbti} />
+                </div>
             </AppWrapper>
         </ThemeProvider>
     );
