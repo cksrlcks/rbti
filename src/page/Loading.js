@@ -32,6 +32,7 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
         }
 
         const bestRmn = data.map((item, idx) => item.rmn_seq).slice(0, 5);
+        console.log(bestRmn);
         const bestRmnRank = sortData(originData, "sellNum", "desc").find((item) => item.rmn_seq == bestRmn[0]).sellNum;
 
         const otherFvRmn = sortData(originData, "fvNum", "desc")
@@ -78,7 +79,7 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
 
             return max.rmn_seq;
         };
-
+        console.log(answer);
         const attrRmn = evalAttrRmn(answer[15]);
 
         const resultSet = {
@@ -94,13 +95,15 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
         stringified = qs.stringify(resultSet);
 
         setTimeout(() => {
+            //settimeout안에서 resultSet은 이전 state를 기억하고 잇어서 밖으로 빼야한다
+            //stringified = qs.stringify(resultSet);
             if (!stringified) {
                 navigate("/");
             }
 
             navigate(`/result?${stringified}`);
         }, 3000);
-    }, [answer, data]);
+    }, []);
 
     return (
         <LoadingBox>

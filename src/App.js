@@ -56,13 +56,21 @@ function App({ rbti }) {
         const newAnswer = { [qid]: value };
         setAnswer((prev) => ({ ...prev, ...newAnswer }));
 
-        if (questionNumber > question.length - 1) {
-            navigate("/loading", { state: { done: true } });
-            setQuestionNumber((prev) => 1);
-        } else {
-            setQuestionNumber((prev) => prev + 1);
-        }
+        setQuestionNumber((prev) => prev + 1);
     };
+
+    useEffect(() => {
+        if (question) {
+            if (questionNumber > question.length) {
+                setQuestionNumber((prev) => 1);
+                navigate("/loading", { state: { done: true } });
+            }
+
+            if (questionNumber < 1) {
+                setQuestionNumber((prev) => 1);
+            }
+        }
+    }, [questionNumber]);
 
     const deleteAnswer = (num) => {
         setAnswer((prev) => {
@@ -71,12 +79,7 @@ function App({ rbti }) {
 
             return newAnswer;
         });
-
-        if (questionNumber - 1 < 1) {
-            setQuestionNumber((prev) => 1);
-        } else {
-            setQuestionNumber((prev) => prev - 1);
-        }
+        setQuestionNumber((prev) => prev - 1);
     };
 
     useEffect(() => {
