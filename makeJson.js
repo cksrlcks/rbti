@@ -6,11 +6,11 @@ const pkgData = require("./db/pkg.json");
 const fs = require("fs");
 
 const fullList = rmnData.rows.map((rmn, idx) => {
-    const file = fileData.rows.filter((file) => file.pgm_file_id === rmn.pgm_file_id);
-    const pkgSeq = pkgData.rows.filter((item) => item.rmn_seq === rmn.rmn_seq);
+    const file = fileData.rows.filter((file) => file.pgm_file_id == rmn.pgm_file_id);
+    const pkg_seq = pkgData.rows.filter((item) => item.rmn_seq == rmn.rmn_seq).map((item) => item.pkg_seq);
 
     return {
-        pkgSeq: pkgSeq[0] ? pkgSeq[0].pkg_seq : "",
+        pkg_seq: pkg_seq,
         rmn_nm: rmn.rmn_nm,
         rmn_seq: rmn.rmn_seq,
         cate1: rmn.cate1,
@@ -26,7 +26,8 @@ const fullList = rmnData.rows.map((rmn, idx) => {
     };
 });
 
-const rmnList = JSON.stringify(fullList.filter((item) => item.cate1 === "0100000"));
+const rmnList = JSON.stringify(fullList);
+
 fs.writeFile("./public/db.json", rmnList, function (err) {
     if (err) console.log(err);
 });

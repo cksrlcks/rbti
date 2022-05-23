@@ -197,8 +197,7 @@ class Rbti {
 
                     //채식에 20점 추가로 임시조치
                     this.data.forEach((data) => {
-                        if (data.pkgSeq == 22 || data.pkgSeq == 18) {
-                            console.log(data.pkgSeq);
+                        if (data.pkg_seq.includes(22)) {
                             const prevScore = data.score;
                             data.score = prevScore + 20;
                         }
