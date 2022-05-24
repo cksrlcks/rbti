@@ -9,7 +9,6 @@ import Loading from "./page/Loading";
 import Result from "./page/Result";
 import Intro from "./page/Intro";
 import ErrorPage from "./page/404";
-import { rmnQuestion } from "./data/question";
 import ScrollTop from "./component/ScrollTop";
 import RmnScoreBoard from "./component/ScoreBoard";
 import { randomPick, sortData } from "./lib/utill";
@@ -17,12 +16,12 @@ import { randomPick, sortData } from "./lib/utill";
 function App({ rbti }) {
     const navigate = useNavigate();
     const [questionNumber, setQuestionNumber] = useState(1);
-    const [data, setData] = useState([]);
-    const [originData, setOriginData] = useState([]);
     const [answer, setAnswer] = useState([]);
     const [question, setQuestion] = useState("");
     const [userCount, setUserCount] = useState("");
     const [loading, setLoading] = useState(true);
+    const [score, setScore] = useState([]);
+    const [originData, setOriginData] = useState([]);
 
     const theme = {
         primaryColor: "#f44502",
@@ -32,60 +31,47 @@ function App({ rbti }) {
     useEffect(() => {
         //axios로 실서버에서 데이터 가져오기 (실운용시)
         axios.get("/db.json").then((res) => {
+            //유저수 업데이트
+            setUserCount(2025);
+
+            //가져온 db로 rbti클래스 데이터 생성
+            rbti.init(res.data);
+
+            //질문셋팅 (rbti클래스에서 랜덤라면생성해서 질문만들어오기)
+            const questionData = rbti.getAnswer();
+            setQuestion(questionData);
+
+            //스코어데이터 셋팅
+            setScore(rbti.data);
+
+            //오리진
+            setOriginData(rbti.originRmnData);
+
             setLoading(false);
-            setData(res.data);
-            setOriginData(res.data);
-
-            setQuestion((prev) => {
-                const formattedQuestion = rmnQuestion.map((item) => {
-                    if (item.qId == 15) {
-                        return { ...item, answerList: [...randomPick(res.data, 30)] };
-                    } else {
-                        return item;
-                    }
-                });
-                return formattedQuestion;
-            });
         });
-
-        //유저수 업데이트
-        setUserCount(2025);
     }, []);
 
     const updateAnswer = (qid, value) => {
-        const newAnswer = { [qid]: value };
-        setAnswer((prev) => ({ ...prev, ...newAnswer }));
-
+        setAnswer((prev) => [...prev, { qid: qid, value: value }]);
         setQuestionNumber((prev) => prev + 1);
     };
 
-    useEffect(() => {
-        if (question) {
-            if (questionNumber > question.length) {
-                setQuestionNumber((prev) => 1);
-                navigate("/loading", { state: { done: true } });
-            }
-
-            if (questionNumber < 1) {
-                setQuestionNumber((prev) => 1);
-            }
-        }
-    }, [questionNumber]);
-
-    const deleteAnswer = (num) => {
-        setAnswer((prev) => {
-            const newAnswer = { ...prev };
-            delete newAnswer[num - 1];
-
-            return newAnswer;
-        });
+    const deleteAnswer = (qid) => {
+        setAnswer((prev) => prev.filter((item) => item.qid != qid - 1));
         setQuestionNumber((prev) => prev - 1);
     };
 
     useEffect(() => {
-        const newData = rbti.test(originData, answer);
-        setData((prev) => sortData(newData, "score", "desc"));
-    }, [answer]);
+        if (question) {
+            console.log(answer);
+            const newScore = rbti.test(answer);
+            setScore(sortData(newScore, "score", "desc"));
+
+            if (questionNumber > question.length) {
+                navigate("/loading", { state: { done: true } });
+            }
+        }
+    }, [questionNumber]);
 
     return (
         <ThemeProvider theme={theme}>
@@ -97,13 +83,13 @@ function App({ rbti }) {
                             <Route path="*" element={<ErrorPage />} />
                             <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
                             <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} question={question} questionNumber={questionNumber} />} />
-                            <Route path="/loading" element={<Loading rbti={rbti} answer={answer} data={data} originData={originData} question={question} />} />
-                            <Route path="/result" element={<Result rbti={rbti} answer={answer} originData={originData} />} setQuestion={setQuestion} setOriginData={setOriginData} />
+                            <Route path="/loading" element={<Loading rbti={rbti} question={question} answer={answer} score={score} />} />
+                            <Route path="/result" element={<Result rbti={rbti} question={question} originData={originData} />} />
                         </Routes>
                     </div>
                 </div>
                 <div className="right">
-                    <RmnScoreBoard data={data} />
+                    <RmnScoreBoard score={score} />
                 </div>
             </AppWrapper>
         </ThemeProvider>

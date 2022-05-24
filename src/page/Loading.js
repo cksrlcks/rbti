@@ -6,7 +6,7 @@ import styled from "styled-components";
 import qs from "qs";
 import { sortData, stringToArray } from "../lib/utill";
 
-const Loading = ({ rbti, answer, data, originData, question }) => {
+const Loading = ({ rbti, answer, score }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [result, setResult] = useState("");
@@ -31,12 +31,11 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
             return;
         }
 
-        const bestRmn = data.map((item, idx) => item.rmn_seq).slice(0, 5);
-        console.log(bestRmn);
-        const bestRmnRank = sortData(originData, "sellNum", "desc").find((item) => item.rmn_seq == bestRmn[0]).sellNum;
+        const bestRmn = score.map((item) => item.rmn_seq).slice(0, 5);
+        const bestRmnRank = sortData(rbti.originRmnData, "sellNum", "desc").find((item) => item.rmn_seq == bestRmn[0]).sellNum;
 
-        const otherFvRmn = sortData(originData, "fvNum", "desc")
-            .map((item, idx) => item.rmn_seq)
+        const otherFvRmn = sortData(rbti.originRmnData, "fvNum", "desc")
+            .map((item) => item.rmn_seq)
             .slice(0, 4);
 
         //끌리는 라면의 공통점찾기
@@ -44,7 +43,7 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
             let tags = [];
 
             seqArray.forEach((seq) => {
-                originData.forEach((ormn) => {
+                rbti.originRmnData.forEach((ormn) => {
                     if (seq == ormn.rmn_seq) {
                         let selectedTags = stringToArray(ormn.rmn_tag);
                         tags = [...tags, ...selectedTags];
@@ -59,7 +58,7 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
             const list = seqArray.map((seq) => {
                 let score = 0;
                 newTags.forEach((tag) => {
-                    originData.forEach((ormn) => {
+                    rbti.originRmnData.forEach((ormn) => {
                         if (ormn.rmn_seq == seq && ormn.rmn_tag.includes(tag)) {
                             score++;
                         }
@@ -79,8 +78,8 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
 
             return max.rmn_seq;
         };
-        console.log(answer);
-        const attrRmn = evalAttrRmn(answer[15]);
+
+        const attrRmn = evalAttrRmn(answer[14].value);
 
         const resultSet = {
             answer: answer,
@@ -103,13 +102,13 @@ const Loading = ({ rbti, answer, data, originData, question }) => {
 
             navigate(`/result?${stringified}`);
         }, 3000);
-    }, []);
+    }, [score, rbti, answer]);
 
     return (
         <LoadingBox>
             <CircleProgressBar trailStrokeColor="gray" strokeColor="teal" percentage={100} speed={4} innerText="complete" />
             잠시만 기다려주세요
-            <br /> {`${answer[1]}님의`} 라면박스를 조립중입니다
+            <br /> {`${answer[0].value}님의`} 라면박스를 조립중입니다
         </LoadingBox>
     );
 };

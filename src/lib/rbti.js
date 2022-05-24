@@ -1,8 +1,28 @@
-import { stringToArray, organizeArray, sortData } from "./utill";
+import { stringToArray, organizeArray, sortData, randomPick } from "./utill";
 import { sort9Filter, sort10Filter } from "../data/filter";
+import { rmnQuestion } from "../data/question";
+import _ from "lodash";
 
 class Rbti {
     constructor() {}
+
+    init(originData) {
+        this.originRmnData = _.cloneDeep(originData);
+        this.data = _.cloneDeep(originData);
+        this.answer = [];
+    }
+
+    getAnswer() {
+        this.question = rmnQuestion.map((q) => {
+            if (q.qId == 15) {
+                return { ...q, answerList: [...randomPick(this.data, 30)] };
+            } else {
+                return q;
+            }
+        });
+
+        return this.question;
+    }
 
     eval(qid, value) {
         switch (qid) {
@@ -14,7 +34,6 @@ class Rbti {
                 break;
             case 4:
                 break;
-
             case 5:
                 break;
             case 6:
@@ -261,12 +280,12 @@ class Rbti {
         }
     }
 
-    test(origin, answer) {
-        this.originRmnData = origin.map((item) => ({ ...item, score: 0 }));
-        this.data = origin.map((item) => ({ ...item, score: 0 }));
-        for (const key in answer) {
-            this.eval(+key, answer[key]);
-        }
+    test(answer) {
+        this.data = this.originRmnData.map((item) => ({ ...item, score: 0 }));
+        answer.forEach((answer) => {
+            this.eval(answer.qid, answer.value);
+        });
+
         return this.data;
     }
 }
