@@ -41,3 +41,11 @@ export const organizeArray = function (array) {
     //배열의 앞뒤공백, 중복제거
     return array.map((element) => element.trim()).filter((element) => element !== "");
 };
+
+export const createMarkup = function (string) {
+    return { __html: string };
+};
+
+export const createImgUrl = function (name) {
+    return `https://www.oramyun.com/data/SITE000001/ORMN_RMN/${name}.png`;
+};

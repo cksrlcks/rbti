@@ -22,6 +22,7 @@ function App({ rbti }) {
     const [loading, setLoading] = useState(true);
     const [score, setScore] = useState([]);
     const [originData, setOriginData] = useState([]);
+    const [result, setResult] = useState([]);
 
     const theme = {
         primaryColor: "#f44502",
@@ -82,9 +83,13 @@ function App({ rbti }) {
                         <Routes>
                             <Route path="*" element={<ErrorPage />} />
                             <Route path="/" element={<Intro userCount={userCount} loading={loading} />} />
-                            <Route path="/question" element={<Question rbti={rbti} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} question={question} questionNumber={questionNumber} />} />
-                            <Route path="/loading" element={<Loading rbti={rbti} question={question} answer={answer} score={score} />} />
-                            <Route path="/result" element={<Result rbti={rbti} question={question} originData={originData} />} />
+                            <Route
+                                path="/question"
+                                element={<Question rbti={rbti} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} question={question} questionNumber={questionNumber} />}
+                            />
+                            <Route path="/loading" element={<Loading rbti={rbti} question={question} answer={answer} score={score} setResult={setResult} />} />
+                            <Route path="/result" element={<Result originData={originData} />} />
+                            <Route path="/result/:testId" element={<Result originData={originData} />} />
                         </Routes>
                     </div>
                 </div>

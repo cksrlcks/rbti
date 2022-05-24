@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import CircleProgressBar from "../component/ProgressCircle";
 import styled from "styled-components";
-import qs from "qs";
 import { sortData, stringToArray } from "../lib/utill";
 
 const Loading = ({ rbti, answer, score }) => {
@@ -24,19 +23,13 @@ const Loading = ({ rbti, answer, score }) => {
     }, []);
 
     useEffect(() => {
-        let stringified;
         if (!location.state) {
             alert("설문을 위해 처음으로 돌아갑니다.");
             navigate("/");
             return;
         }
 
-        const bestRmn = score.map((item) => item.rmn_seq).slice(0, 5);
-        const bestRmnRank = sortData(rbti.originRmnData, "sellNum", "desc").find((item) => item.rmn_seq == bestRmn[0]).sellNum;
-
-        const otherFvRmn = sortData(rbti.originRmnData, "fvNum", "desc")
-            .map((item) => item.rmn_seq)
-            .slice(0, 4);
+        const pickRmn = score.slice(0, 5);
 
         //끌리는 라면의 공통점찾기
         const evalAttrRmn = (seqArray) => {
@@ -81,26 +74,41 @@ const Loading = ({ rbti, answer, score }) => {
 
         const attrRmn = evalAttrRmn(answer[14].value);
 
-        const resultSet = {
-            answer: answer,
-            bestRmn: bestRmn,
-            bestRmnRank: bestRmnRank,
+        //나의라면으로 뽑힌 아이템의 현재인기순위
+        const bestRmnRnk = sortData(rbti.originRmnData, "sellNum", "desc").findIndex((item) => item.rmn_seq == pickRmn[0].rmn_seq);
+
+        const sendData = {
+            gender: answer[1].value,
+            age: answer[2].value,
+            frequency: answer[3].value,
+            quantity: answer[4].value,
+
+            //결과페이지 필요한 값들
+
+            //이름
+            name: answer[0].value,
+
+            //선택된5개라면
+            pickRmn: pickRmn,
+
+            //나의라면으로 뽑힌 아이템의 현재인기순위
+            bestRmnRnk: bestRmnRnk,
+
+            //끌리는라면3개중 공통태그가 가장많은 라면1개
             attrRmn: attrRmn,
-            otherFvRmn: otherFvRmn,
+
+            //질문응답결과들
+            answer: answer,
         };
 
-        //서버로 보냄(axios요청구간)
-        console.log("서버로 보낼 응답데이터", resultSet);
-        stringified = qs.stringify(resultSet);
+        //서버로 보냄 - 응답에 해당 데이터 다시받을수있는 id부여받아서 공유하기버튼에 주소 붙여야함
+        //끝에 id패러미터 붙여서 들어오면 결과페이지 다시 계산해주기
+        //console.log("서버로 보낼 응답데이터", sendData);
+
+        setResult(sendData);
 
         setTimeout(() => {
-            //settimeout안에서 resultSet은 이전 state를 기억하고 잇어서 밖으로 빼야한다
-            //stringified = qs.stringify(resultSet);
-            if (!stringified) {
-                navigate("/");
-            }
-
-            navigate(`/result?${stringified}`);
+            navigate("/result", { state: sendData });
         }, 3000);
     }, [score, rbti, answer]);
 

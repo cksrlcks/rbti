@@ -1,21 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import qs from "qs";
 import axios from "axios";
-import { stringToArray } from "../lib/utill";
+import { sortData, stringToArray, createMarkup, createImgUrl } from "../lib/utill";
 import Button from "../component/Buttons";
 import styled from "styled-components";
 import { rmnQuestion as question } from "../data/question";
 import { motion } from "framer-motion";
 
-const Result = ({ rbti }) => {
+const Result = ({ originData }) => {
     const navigate = useNavigate();
-    const [originData, setOriginData] = useState([]);
-    const [result, setResult] = useState("");
-    const [bestRmn, setBestRmn] = useState("");
-    const [otherFvRmn, setOtherFvRmn] = useState("");
-    const [attrRmn, setAttrRmn] = useState("");
-    const parsedString = qs.parse(window.location.search, { ignoreQueryPrefix: true });
+    const { testId } = useParams();
+    const { state } = useLocation();
+    const [result, setResult] = useState();
 
     useEffect(() => {
         //뒤로가기 방지
@@ -29,97 +26,52 @@ const Result = ({ rbti }) => {
         return () => window.removeEventListener("popstate", preventGoBack);
     }, []);
 
-    //결과공유를 위해 응답결과를 URL 스트링으로 저장한걸 들고와서 state업데이트 해주기
-    //쿼리 스트링 없으면 검사시작화면으로 보내주기
     useEffect(() => {
-        if (!Object.keys(parsedString).length || parsedString.hasOwnProperty("undefined")) {
-            //쿼리 스트링 없으면 검사시작화면으로 보내주기
-            navigate("/");
-        }
-
-        setResult(parsedString);
-    }, []);
-
-    //쿼리스트링으로 넘어온 데이터에 있는 라면seq로, 라면데이터에서 라면찾아서 state업데이트 해주기
-    //라면정보를 전부 URL에 담기힘들어서, seq만 전달받아서 다시찾기
-    useEffect(() => {
-        //결과페이지만 보고 들어와서 셋팅안되어잇으면 한번더 해주기
-        //axios로 실서버에서 데이터 가져오기 (실운용시)
-        if (!originData.length) {
-            axios.get("/db.json").then((res) => {
-                setOriginData(res.data);
-            });
-        }
-
-        console.log(result);
-
-        if (result) {
-            setBestRmn((prev) => {
-                let selected = [];
-                result.bestRmn.forEach((item) => {
-                    originData.forEach((ormnItem) => {
-                        if (ormnItem.rmn_seq == item) {
-                            selected.push(ormnItem);
-                        }
+        if (state) {
+            console.log(state);
+            setResult(state);
+        } else {
+            if (testId) {
+                //서버에서 testId로 result가져오기(mockTestData)
+                axios
+                    .get(`/api/${testId}`)
+                    .then()
+                    .catch((err) => console.log("임시api"))
+                    .then(() => {
+                        setResult(mockTestData);
                     });
-                });
-                return selected;
-            });
-
-            setOtherFvRmn((prev) => {
-                let selected = [];
-                result.otherFvRmn.forEach((item) => {
-                    originData.forEach((ormnItem) => {
-                        if (ormnItem.rmn_seq == item) {
-                            selected.push(ormnItem);
-                        }
-                    });
-                });
-                return selected;
-            });
-
-            setAttrRmn((prev) => {
-                const attrRmnInfo = originData.find((ormnItem) => ormnItem.rmn_seq == result.attrRmn);
-                return attrRmnInfo;
-            });
+            } else {
+                navigate("/");
+            }
         }
-    }, [result, originData]);
-
-    //라면정보에 들어있는 br태그등을 주입하기 위해서
-    const createMarkup = (string) => {
-        return { __html: string };
-    };
-
-    const createImgUrl = (name) => {
-        return `https://www.oramyun.com/data/SITE000001/ORMN_RMN/${name}.png`;
-    };
+    }, [state]);
 
     const goHome = () => {
         window.location.replace("/");
     };
     return (
         <>
-            {result && bestRmn.length && otherFvRmn.length && (
+            {result && (
                 <ResultForm as={motion.div} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                     <div className="result-top">
                         <div className="title">
                             <div className="title-find">찾았어요!!!</div>
-                            <div className="title-name">{result.answer[0].value}님이 제일 좋아하실만한 라면!</div>
+                            <div className="title-name">{result.name}님이 제일 좋아하실만한 라면!</div>
                             <div className="title-rmn">
-                                <span className="emp">"{bestRmn[0].rmn_nm}"</span>이에요!
+                                <span className="emp">"{result.pickRmn[0].rmn_nm}"</span>이에요!
                             </div>
                         </div>
                     </div>
 
                     <div className="result-img-zone">
-                        <div className="rmn-comp">{bestRmn[0].mnfctr_nm}</div>
-                        <div className="rmn-name">{bestRmn[0].rmn_nm}</div>
+                        <div className="rmn-comp">{result.pickRmn[0].mnfctr_nm}</div>
+                        <div className="rmn-name">{result.pickRmn[0].rmn_nm}</div>
                         <div className="rmn-img">
-                            <img src={createImgUrl(bestRmn[0].file_save_nm)} alt={bestRmn[0].rmn_nm} />
+                            <img src={createImgUrl(result.pickRmn[0].file_save_nm)} alt={result.pickRmn[0].rmn_nm} />
                         </div>
-                        <div className="rmn-info" dangerouslySetInnerHTML={createMarkup(bestRmn[0].rmn_info)}></div>
+                        <div className="rmn-info" dangerouslySetInnerHTML={createMarkup(result.pickRmn[0].rmn_info)}></div>
                         <div className="rmn-tag-list">
-                            {stringToArray(bestRmn[0].rmn_tag).map((item, idx) => (
+                            {stringToArray(result.pickRmn[0].rmn_tag).map((item, idx) => (
                                 <span key={idx} className="rmn-tag">
                                     {item}
                                 </span>
@@ -129,7 +81,7 @@ const Result = ({ rbti }) => {
 
                     <div className="result-ment">
                         <div className="ment">
-                            해당 제품은 오늘의라면에서 {result.bestRmnRank}번째로 <br />잘 나가는 라면이예요😎
+                            해당 제품은 오늘의라면에서 {result.bestRmnRnk}번째로 <br />잘 나가는 라면이예요😎
                         </div>
                         <div className="ment">
                             {result.answer[6].value == "매운맛" && "쓰읍하- 화끈한 매운맛에"}
@@ -147,10 +99,10 @@ const Result = ({ rbti }) => {
                             {result.answer[0].value}님님이 맛있을 것 같다고 선택하신
                             <br />
                             <Answer question={question} qid={10} value={result.answer[9].value} /> <br />
-                            바로 이 <span className="emp">"{bestRmn[0].rmn_nm}"</span>이라구요!!
+                            바로 이 <span className="emp">"{result.pickRmn[0].rmn_nm}"</span>이라구요!!
                         </div>
                         <div className="ment">
-                            그리고 지금 제일 끌리시는 {attrRmn.rmn_nm}과(와) {attrRmn.rmn_tag}의 공통점을 가졌어요
+                            그리고 지금 제일 끌리시는 {result.attrRmn.rmn_nm}과(와) {result.attrRmn.rmn_tag}의 공통점을 가졌어요
                         </div>
                         <div className="ment">
                             {result.answer[12].value != "없어요" && <>자주 곁들여 드시는 {result.answer[12].value.toString()}과(와)도 잘 </>}
@@ -159,7 +111,7 @@ const Result = ({ rbti }) => {
                         </div>
                     </div>
                     <div className="rmn-list">
-                        {bestRmn.map((item, idx) => {
+                        {result.pickRmn.map((item, idx) => {
                             if (idx != 0) {
                                 return (
                                     <div className="rmn-item" key={idx}>
@@ -170,7 +122,7 @@ const Result = ({ rbti }) => {
                         })}
                     </div>
                     <div className="ment">
-                        {bestRmn[0].rmn_nm} 다음으로 좋아하실 만한 라면들이에요!
+                        {result.pickRmn[0].rmn_nm} 다음으로 좋아하실 만한 라면들이에요!
                         <div className="emp">그리고, 지금 이 모~든 라면들을 한 봉지 씩 바로 맛 보실 수 있어요!!</div>
                     </div>
                     <div className="result-btn-wrapper">
@@ -195,14 +147,16 @@ const Result = ({ rbti }) => {
                         </div>
 
                         <div className="rmn-list">
-                            {otherFvRmn.map((item, idx) => {
-                                return (
-                                    <div className="rmn-item" key={idx}>
-                                        <img src={createImgUrl(item.file_save_nm)} alt={item.rmn_nm} />
-                                        <div className="num">{item.fvNum ? item.fvNum : "---"}명의 취향이에요!</div>
-                                    </div>
-                                );
-                            })}
+                            {sortData(originData, "fvNum", "desc")
+                                .slice(0, 4)
+                                .map((item, idx) => {
+                                    return (
+                                        <div className="rmn-item" key={idx}>
+                                            <img src={createImgUrl(item.file_save_nm)} alt={item.rmn_nm} />
+                                            <div className="num">{item.fvNum ? item.fvNum : "---"}명의 취향이에요!</div>
+                                        </div>
+                                    );
+                                })}
                         </div>
 
                         <div className="share">
@@ -381,3 +335,217 @@ const ResultForm = styled.div`
         }
     }
 `;
+
+const mockTestData = {
+    gender: "여성",
+    age: "20대",
+    frequency: "4",
+    quantity: "3",
+    name: "rty",
+    pickRmn: [
+        {
+            pkg_seq: [22, -1, 18, 0],
+            rmn_nm: "채황",
+            rmn_seq: 57,
+            cate1: "0100000",
+            rmn_info: "영국 비건협회 인증을 받은 채소라면의 황제! <br> 푸짐한 야채 건더기와 구수한 국물",
+            rmn_tag: "국물라면,순한맛,베지,저칼로리,맑은국물,구수한맛",
+            pgm_file_id: "FILE00000000254",
+            new_yn: "N",
+            mnfctr_nm: "오뚜기라면 주식회사",
+            pgm_file_seq: 0,
+            site_id: "SITE000001",
+            file_save_nm: "ORMN_RMN_202109020930523030",
+            file_real_nm: "noodleimg011.png",
+            file_size: 51830,
+            file_type: null,
+            file_dtl_type: null,
+            file_ext: "png",
+            file_path: "/SITE000001/ORMN_RMN/",
+            sort_seq: 0,
+            tgt_tbl: "ORMN_RMN",
+            tgt_seq: null,
+            regi_id: "oramyun",
+            regi_dtm: "2021-09-02 09:30:52.317772",
+            score: 30,
+            sellNum: 16,
+            fvNum: 800,
+        },
+        {
+            pkg_seq: [22, -1, 0, 18],
+            rmn_nm: "야채라면",
+            rmn_seq: 58,
+            cate1: "0100000",
+            rmn_info: "깔끔하고 담백한 비건라면! <br> 생생한 면발에 6가지 야채로 낸 개운한 국물맛!",
+            rmn_tag: "국물라면,순한맛,구수한맛,저칼로리,베지",
+            pgm_file_id: "FILE00000000255",
+            new_yn: "N",
+            mnfctr_nm: "(주)농심",
+            pgm_file_seq: 0,
+            site_id: "SITE000001",
+            file_save_nm: "ORMN_RMN_202109020947539330",
+            file_real_nm: "noodleimg012.png",
+            file_size: 57033,
+            file_type: null,
+            file_dtl_type: null,
+            file_ext: "png",
+            file_path: "/SITE000001/ORMN_RMN/",
+            sort_seq: 0,
+            tgt_tbl: "ORMN_RMN",
+            tgt_seq: null,
+            regi_id: "oramyun",
+            regi_dtm: "2021-09-02 09:47:53.944599",
+            score: 30,
+            sellNum: 29,
+            fvNum: 1450,
+        },
+        {
+            pkg_seq: [-1, 18, 22, 0],
+            rmn_nm: "자연은 맛있다 정비빔면",
+            rmn_seq: 63,
+            cate1: "0100000",
+            rmn_info: "매콤 새콤달콤 감칠맛이 느껴지는 고급스러운 맛! <br> 비건계의 프리미엄 비빔라면",
+            rmn_tag: "비빔라면, 보통맛, 베지, 건면, 저칼로리, 저나트륨,",
+            pgm_file_id: "FILE00000000260",
+            new_yn: "N",
+            mnfctr_nm: "(주)피피이씨음성생면",
+            pgm_file_seq: 0,
+            site_id: "SITE000001",
+            file_save_nm: "ORMN_RMN_202109021054018380",
+            file_real_nm: "noodleimg017.png",
+            file_size: 43453,
+            file_type: null,
+            file_dtl_type: null,
+            file_ext: "png",
+            file_path: "/SITE000001/ORMN_RMN/",
+            sort_seq: 0,
+            tgt_tbl: "ORMN_RMN",
+            tgt_seq: null,
+            regi_id: "oramyun",
+            regi_dtm: "2021-09-02 10:54:01.896871",
+            score: 30,
+            sellNum: 45,
+            fvNum: 2250,
+        },
+        {
+            pkg_seq: [-1, 0, 18, 22],
+            rmn_nm: "열무비빔면",
+            rmn_seq: 124,
+            cate1: "0100000",
+            rmn_info: "가늘고 쫄깃한 면발과 청량감! <br> 입안 한 가득 느껴지는 열무의 매콤새콤함!",
+            rmn_tag: "비빔라면,보통맛,스테디셀러,저나트륨",
+            pgm_file_id: "FILE00000000401",
+            new_yn: "N",
+            mnfctr_nm: "삼양식품㈜",
+            pgm_file_seq: 1,
+            site_id: "SITE000001",
+            file_save_nm: "ORMN_RMN_202112010450198571",
+            file_real_nm: "열무비빔면.png",
+            file_size: 45225,
+            file_type: null,
+            file_dtl_type: null,
+            file_ext: "png",
+            file_path: "/SITE000001/ORMN_RMN/",
+            sort_seq: 1,
+            tgt_tbl: "ORMN_RMN",
+            tgt_seq: null,
+            regi_id: "wcon",
+            regi_dtm: "2021-12-01 16:50:19.859582",
+            score: 30,
+            sellNum: 67,
+            fvNum: 3350,
+        },
+        {
+            pkg_seq: [-1, 0, 18, 22],
+            rmn_nm: "삼육채식라면(순한맛)",
+            rmn_seq: 291,
+            cate1: "0100000",
+            rmn_info: "순 식물성으로 만든 면! <br> 국산 현미로 만든 면과 국산 버섯이 함유되어 담백한 국물의 채식 라면",
+            rmn_tag: "국물라면, 순한맛, 이색라면, 베지, 저칼로리,",
+            pgm_file_id: "FILE00000000717",
+            new_yn: "N",
+            mnfctr_nm: "(주)새롬식품",
+            pgm_file_seq: 1,
+            site_id: "SITE000001",
+            file_save_nm: "ORMN_RMN_202203230319196511",
+            file_real_nm: "noodleimg134.png",
+            file_size: 62033,
+            file_type: null,
+            file_dtl_type: null,
+            file_ext: "png",
+            file_path: "/SITE000001/ORMN_RMN/",
+            sort_seq: 1,
+            tgt_tbl: "ORMN_RMN",
+            tgt_seq: null,
+            regi_id: "oranee1",
+            regi_dtm: "2022-03-23 15:19:19.657708",
+            score: 30,
+            sellNum: 187,
+            fvNum: 9350,
+        },
+    ],
+    bestRmnRnk: 145,
+    attrRmn: "313",
+    answer: [
+        {
+            qid: 1,
+            value: "rty",
+        },
+        {
+            qid: 2,
+            value: "여성",
+        },
+        {
+            qid: 3,
+            value: "20대",
+        },
+        {
+            qid: 4,
+            value: "4",
+        },
+        {
+            qid: 5,
+            value: "3",
+        },
+        {
+            qid: 6,
+            value: ["비빔라면", "볶음라면", "국물라면", "짜장라면"],
+        },
+        {
+            qid: 7,
+            value: "순한맛",
+        },
+        {
+            qid: 8,
+            value: "볶음라면, 짜장라면, 치즈&크림",
+        },
+        {
+            qid: 9,
+            value: "단짠단짠",
+        },
+        {
+            qid: 10,
+            value: ["해물맛", "구수담백", "맑은라면"],
+        },
+        {
+            qid: 11,
+            value: "채식성분 라면",
+        },
+        {
+            qid: 12,
+            value: "모두",
+        },
+        {
+            qid: 13,
+            value: ["밥", "단무지"],
+        },
+        {
+            qid: 14,
+            value: ["고추", "소세지"],
+        },
+        {
+            qid: 15,
+            value: ["50", "313", "58"],
+        },
+    ],
+};
