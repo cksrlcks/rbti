@@ -63,7 +63,7 @@ const Result = ({ originData }) => {
         <>
             {result && (
                 <ResultForm as={motion.div} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <div className="result-top">
+                    <motion.div className="result-top" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
                         <div className="title">
                             <div className="title-find">찾았어요!!!</div>
                             <div className="title-name">{result.name}님이 제일 좋아하실만한 라면!</div>
@@ -71,25 +71,30 @@ const Result = ({ originData }) => {
                                 <span className="emp">"{result.pickRmn[0].rmn_nm}"</span>이에요!
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     <div className="result-img-zone">
-                        <div className="rmn-comp">{result.pickRmn[0].mnfctr_nm}</div>
-                        <div className="rmn-name">{result.pickRmn[0].rmn_nm}</div>
-                        <div className="rmn-img">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+                            <div className="rmn-comp">{result.pickRmn[0].mnfctr_nm}</div>
+                            <div className="rmn-name">{result.pickRmn[0].rmn_nm}</div>
+                        </motion.div>
+
+                        <motion.div className="rmn-img" initial={{ scale: 5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, type: "spring", bounce: 0.25 }}>
                             <img src={createImgUrl(result.pickRmn[0].file_save_nm)} alt={result.pickRmn[0].rmn_nm} />
-                        </div>
-                        <div className="rmn-info" dangerouslySetInnerHTML={createMarkup(result.pickRmn[0].rmn_info)}></div>
-                        <div className="rmn-tag-list">
-                            {stringToArray(result.pickRmn[0].rmn_tag).map((item, idx) => (
-                                <span key={idx} className="rmn-tag">
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
+                        </motion.div>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+                            <div className="rmn-info" dangerouslySetInnerHTML={createMarkup(result.pickRmn[0].rmn_info)}></div>
+                            <div className="rmn-tag-list">
+                                {stringToArray(result.pickRmn[0].rmn_tag).map((item, idx) => (
+                                    <span key={idx} className="rmn-tag">
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </motion.div>
                     </div>
 
-                    <div className="result-ment">
+                    <motion.div className="result-ment" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
                         <div className="ment">
                             해당 제품은 오늘의라면에서 {result.bestRmnRnk}번째로 <br />잘 나가는 라면이예요😎
                         </div>
@@ -119,8 +124,8 @@ const Result = ({ originData }) => {
                             {result.answer[12].value != "없어요" && result.answer[13].value == "없어요" ? "어울려요." : "어울리며"}
                             {result.answer[13].value != "없어요" && <>지금 냉장고에 있는 {result.answer[13].value.toString()}을(를) 넣어드셔도 꿀맛이랍니당👍 </>}
                         </div>
-                    </div>
-                    <div className="rmn-list">
+                    </motion.div>
+                    <motion.div className="rmn-list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
                         {result.pickRmn.map((item, idx) => {
                             if (idx != 0) {
                                 return (
@@ -130,12 +135,12 @@ const Result = ({ originData }) => {
                                 );
                             }
                         })}
-                    </div>
-                    <div className="ment">
+                    </motion.div>
+                    <motion.div className="ment" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
                         {result.pickRmn[0].rmn_nm} 다음으로 좋아하실 만한 라면들이에요!
                         <div className="emp">그리고, 지금 이 모~든 라면들을 한 봉지 씩 바로 맛 보실 수 있어요!!</div>
-                    </div>
-                    <div className="result-btn-wrapper">
+                    </motion.div>
+                    <motion.div className="result-btn-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
                         <a href="https://www.oramyun.com/view.do?no=23" target="_blank">
                             이 조합으로 먹어보기
                         </a>
@@ -143,8 +148,8 @@ const Result = ({ originData }) => {
                             내가 직접 다시 고르기
                         </a>
                         <Button name="다시하기" onClick={() => goHome()} />
-                    </div>
-                    <div className="other">
+                    </motion.div>
+                    <motion.div className="other" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
                         <div className="other-ment">
                             <div className="ment">
                                 다른 분들은
@@ -174,7 +179,7 @@ const Result = ({ originData }) => {
                                 친구에게 테스트 공유하기
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 </ResultForm>
             )}
         </>
@@ -232,7 +237,6 @@ const ResultForm = styled.div`
 
     .result-img-zone {
         margin-bottom: 80px;
-        border: 1px solid #eee;
         padding: 40px;
 
         border-radius: 4px;

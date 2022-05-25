@@ -33,4 +33,13 @@ const AppWrapper = styled.div`
             margin-bottom: 0.4em;
         }
     }
+
+    @media screen and (max-width: 1024px) {
+        .left {
+            width: 100%;
+        }
+        .right {
+            display: none;
+        }
+    }
 `;
