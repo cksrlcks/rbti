@@ -13,28 +13,29 @@
     new_yn - 신상품인지  
     mnfctr_nm - 제조사이름  
     sellNum - 팔린숫자  
-    fvNum - 좋아요한 숫자  
+    fvNum - 좋아요한 숫자
 
-### POST /rmns  
+### POST /rmns
 
--   설문데이터 저장  
+-   설문데이터 저장
 -   body : {  
-    gneder:string(성별),  
+    gender:string(성별),  
     age:string(연령대),  
     frequency:string(횟수),  
     quantity:string(수량),  
     name:string(이름),  
     pickRmn: array(선택된라면5개),  
+    bestRmnRnk : string(나의라면으로 뽑힌 아이템의 현재인기순위)
     attrRmn:string(끌리는라면1개seq),  
     answer:array(설문응답결과꾸러미)  
-    }  
--   return 결과저장된 고유 아이디  
+    }
+-   return 결과저장된 고유 아이디
 
-### GET /rmns/고유아이디  
+### GET /rmns/고유아이디
 
--   저장된 응답결과 가져오기 (post보냇던거 그대로 들고와야함)  
+-   저장된 응답결과 가져오기 (post보냇던거 그대로 들고와야함)
 -   return {  
-    gneder:string(성별),  
+    gender:string(성별),  
     age:string(연령대),  
     frequency:string(횟수),  
     quantity:string(수량),  
