@@ -12,7 +12,8 @@ const Result = ({ originData }) => {
     const navigate = useNavigate();
     const { testId } = useParams();
     const { state } = useLocation();
-    const [result, setResult] = useState();
+    const [result, setResult] = useState("");
+    const [attrRmn, setAttrRmn] = useState("");
 
     useEffect(() => {
         //뒤로가기 방지
@@ -27,24 +28,33 @@ const Result = ({ originData }) => {
     }, []);
 
     useEffect(() => {
-        if (state) {
-            console.log(state);
-            setResult(state);
-        } else {
-            if (testId) {
-                //서버에서 testId로 result가져오기(mockTestData)
-                axios
-                    .get(`/api/${testId}`)
-                    .then()
-                    .catch((err) => console.log("임시api"))
-                    .then(() => {
-                        setResult(mockTestData);
-                    });
+        if (originData) {
+            if (state) {
+                setResult(state);
             } else {
-                navigate("/");
+                if (testId) {
+                    //서버에서 testId로 result가져오기(mockTestData)
+                    axios
+                        .get(`/api/${testId}`)
+                        .then()
+                        .catch((err) => console.log("임시api"))
+                        .then(() => {
+                            setResult(mockTestData);
+                        });
+                } else {
+                    navigate("/");
+                }
             }
         }
-    }, [state]);
+    }, [state, originData]);
+
+    useEffect(() => {
+        if (result) {
+            setAttrRmn((prev) => {
+                return originData.find((item) => item.rmn_seq == result.attrRmn);
+            });
+        }
+    }, [result, originData]);
 
     const goHome = () => {
         window.location.replace("/");
@@ -102,7 +112,7 @@ const Result = ({ originData }) => {
                             바로 이 <span className="emp">"{result.pickRmn[0].rmn_nm}"</span>이라구요!!
                         </div>
                         <div className="ment">
-                            그리고 지금 제일 끌리시는 {result.attrRmn.rmn_nm}과(와) {result.attrRmn.rmn_tag}의 공통점을 가졌어요
+                            그리고 지금 제일 끌리시는 {attrRmn?.rmn_nm}과(와) {attrRmn?.rmn_tag}의 공통점을 가졌어요
                         </div>
                         <div className="ment">
                             {result.answer[12].value != "없어요" && <>자주 곁들여 드시는 {result.answer[12].value.toString()}과(와)도 잘 </>}
