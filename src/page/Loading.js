@@ -103,7 +103,7 @@ const Loading = ({ rbti, answer, score }) => {
 
         //서버로 보냄 - 응답에 해당 데이터 다시받을수있는 id부여받아서 공유하기버튼에 주소 붙여야함
         //끝에 id패러미터 붙여서 들어오면 결과페이지 다시 계산해주기
-        //console.log("서버로 보낼 응답데이터", sendData);
+        console.log("서버로 보낼 응답데이터", sendData);
 
         setResult(sendData);
 
