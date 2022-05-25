@@ -25,7 +25,7 @@
     quantity:string(수량),  
     name:string(이름),  
     pickRmn: array(선택된라면5개),  
-    bestRmnRnk : string(나의라면으로 뽑힌 아이템의 현재인기순위)
+    bestRmnRnk : string(나의라면으로 뽑힌 아이템의 현재인기순위),  
     attrRmn:string(끌리는라면1개seq),  
     answer:array(설문응답결과꾸러미)  
     }
