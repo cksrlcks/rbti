@@ -31,12 +31,13 @@ function App({ rbti }) {
 
     useEffect(() => {
         //axios로 실서버에서 데이터 가져오기 (실운용시)
-        axios.get("/db.json").then((res) => {
+        axios.get("/rbti/rmns").then((res) => {
             //유저수 업데이트
-            setUserCount(2025);
+            setUserCount(res.data.nop);
 
+			
             //가져온 db로 rbti클래스 데이터 생성
-            rbti.init(res.data);
+            rbti.init(res.data.data);
 
             //질문셋팅 (rbti클래스에서 랜덤라면생성해서 질문만들어오기)
             const questionData = rbti.getAnswer();
@@ -49,7 +50,7 @@ function App({ rbti }) {
             setOriginData(rbti.originRmnData);
 
             setLoading(false);
-        });
+        }).catch(err => console.log(err));
     }, []);
 
     const updateAnswer = (qid, value) => {

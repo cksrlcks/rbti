@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../Buttons/";
 import TopTitle from "./TopTitle";
 import { motion } from "framer-motion";
+import { createImgUrl } from "../../lib/utill";
 
 const RmnMulti = ({ question, submitHandler, handleGoBack }) => {
     let initialCheckbox = question.answerList.map((item) => ({ ...item, checked: false, disabled: false }));
@@ -85,7 +86,7 @@ const RmnMulti = ({ question, submitHandler, handleGoBack }) => {
             <div className="question-container">
                 <div className="rmn-btn-wrapper">
                     {checkbox.map((item, idx) => (
-                        <label key={idx} className="rmn-btn">
+                        <label key={item.rmnSeq} className="rmn-btn">
                             <input
                                 type="checkbox"
                                 value={item.rmn_seq}
@@ -97,9 +98,9 @@ const RmnMulti = ({ question, submitHandler, handleGoBack }) => {
                             />
                             <div className="label">
                                 <div className="rmn-img">
-                                    <img src={`https://www.oramyun.com/data/${item.site_id}/${item.tgt_tbl}/${item.file_save_nm}.${item.file_ext}`} alt={item.rmn_nm} />
+                                    <img src={createImgUrl(item.imgPath)} alt={item.rmnNm} />
                                 </div>
-                                <div className="rmn-title">{item.rmn_nm}</div>
+                                <div className="rmn-title">{item.rmnNm}</div>
                             </div>
                         </label>
                     ))}
