@@ -47,5 +47,5 @@ export const createMarkup = function (string) {
 };
 
 export const createImgUrl = function (name) {
-    return `https://www.oramyun.com/data/SITE000001/ORMN_RMN/${name}.png`;
+    return `https://www.oramyun.com/data${name}`;
 };

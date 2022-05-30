@@ -75,7 +75,7 @@ const Loading = ({ rbti, answer, score }) => {
         const attrRmn = evalAttrRmn(answer[14].value);
 
         //나의라면으로 뽑힌 아이템의 현재인기순위
-        const bestRmnRnk = sortData(rbti.originRmnData, "sellNum", "desc").findIndex((item) => item.rmn_seq == pickRmn[0].rmn_seq);
+        const bestRmnRnk = sortData(rbti.originRmnData, "sell_num", "desc").findIndex((item) => item.rmn_seq == pickRmn[0].rmn_seq);
 
         const sendData = {
             gender: answer[1].value,

@@ -68,22 +68,22 @@ const Result = ({ originData }) => {
                             <div className="title-find">찾았어요!!!</div>
                             <div className="title-name">{result.name}님이 제일 좋아하실만한 라면!</div>
                             <div className="title-rmn">
-                                <span className="emp">"{result.pickRmn[0].rmn_nm}"</span>이에요!
+                                <span className="emp">"{result.pickRmn[0].rmnNm}"</span>이에요!
                             </div>
                         </div>
                     </motion.div>
 
                     <div className="result-img-zone">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-                            <div className="rmn-comp">{result.pickRmn[0].mnfctr_nm}</div>
-                            <div className="rmn-name">{result.pickRmn[0].rmn_nm}</div>
+                            <div className="rmn-comp">{result.pickRmn[0].mnfctrNm}</div>
+                            <div className="rmn-name">{result.pickRmn[0].rmnNm}</div>
                         </motion.div>
 
                         <motion.div className="rmn-img" initial={{ scale: 5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, type: "spring", bounce: 0.25 }}>
-                            <img src={createImgUrl(result.pickRmn[0].file_save_nm)} alt={result.pickRmn[0].rmn_nm} />
+                            <img src={createImgUrl(result.pickRmn[0].file_save_nm)} alt={result.pickRmn[0].rmnNm} />
                         </motion.div>
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-                            <div className="rmn-info" dangerouslySetInnerHTML={createMarkup(result.pickRmn[0].rmn_info)}></div>
+                            <div className="rmn-info" dangerouslySetInnerHTML={createMarkup(result.pickRmn[0].rmnInfo)}></div>
                             <div className="rmn-tag-list">
                                 {stringToArray(result.pickRmn[0].rmn_tag).map((item, idx) => (
                                     <span key={idx} className="rmn-tag">
@@ -114,10 +114,10 @@ const Result = ({ originData }) => {
                             {result.answer[0].value}님님이 맛있을 것 같다고 선택하신
                             <br />
                             <Answer question={question} qid={10} value={result.answer[9].value} /> <br />
-                            바로 이 <span className="emp">"{result.pickRmn[0].rmn_nm}"</span>이라구요!!
+                            바로 이 <span className="emp">"{result.pickRmn[0].rmnNm}"</span>이라구요!!
                         </div>
                         <div className="ment">
-                            그리고 지금 제일 끌리시는 {attrRmn?.rmn_nm}과(와) {attrRmn?.rmn_tag}의 공통점을 가졌어요
+                            그리고 지금 제일 끌리시는 {attrRmn?.rmnNm}과(와) {attrRmn?.rmn_tag}의 공통점을 가졌어요
                         </div>
                         <div className="ment">
                             {result.answer[12].value != "없어요" && <>자주 곁들여 드시는 {result.answer[12].value.toString()}과(와)도 잘 </>}
@@ -130,14 +130,14 @@ const Result = ({ originData }) => {
                             if (idx != 0) {
                                 return (
                                     <div className="rmn-item" key={idx}>
-                                        <img src={createImgUrl(item.file_save_nm)} alt={item.rmn_nm} />
+                                        <img src={createImgUrl(item.imgPath)} alt={item.rmnNm} />
                                     </div>
                                 );
                             }
                         })}
                     </motion.div>
                     <motion.div className="ment" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-                        {result.pickRmn[0].rmn_nm} 다음으로 좋아하실 만한 라면들이에요!
+                        {result.pickRmn[0].rmnNm} 다음으로 좋아하실 만한 라면들이에요!
                         <div className="emp">그리고, 지금 이 모~든 라면들을 한 봉지 씩 바로 맛 보실 수 있어요!!</div>
                     </motion.div>
                     <motion.div className="result-btn-wrapper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
@@ -167,7 +167,7 @@ const Result = ({ originData }) => {
                                 .map((item, idx) => {
                                     return (
                                         <div className="rmn-item" key={idx}>
-                                            <img src={createImgUrl(item.file_save_nm)} alt={item.rmn_nm} />
+                                            <img src={createImgUrl(item.imgPath)} alt={item.rmnNm} />
                                             <div className="num">{item.fvNum ? item.fvNum : "---"}명의 취향이에요!</div>
                                         </div>
                                     );
@@ -359,7 +359,7 @@ const mockTestData = {
     pickRmn: [
         {
             pkg_seq: [22, -1, 18, 0],
-            rmn_nm: "채황",
+            rmnNm: "채황",
             rmn_seq: 57,
             cate1: "0100000",
             rmn_info: "영국 비건협회 인증을 받은 채소라면의 황제! <br> 푸짐한 야채 건더기와 구수한 국물",
@@ -387,7 +387,7 @@ const mockTestData = {
         },
         {
             pkg_seq: [22, -1, 0, 18],
-            rmn_nm: "야채라면",
+            rmnNm: "야채라면",
             rmn_seq: 58,
             cate1: "0100000",
             rmn_info: "깔끔하고 담백한 비건라면! <br> 생생한 면발에 6가지 야채로 낸 개운한 국물맛!",
@@ -415,7 +415,7 @@ const mockTestData = {
         },
         {
             pkg_seq: [-1, 18, 22, 0],
-            rmn_nm: "자연은 맛있다 정비빔면",
+            rmnNm: "자연은 맛있다 정비빔면",
             rmn_seq: 63,
             cate1: "0100000",
             rmn_info: "매콤 새콤달콤 감칠맛이 느껴지는 고급스러운 맛! <br> 비건계의 프리미엄 비빔라면",
@@ -443,7 +443,7 @@ const mockTestData = {
         },
         {
             pkg_seq: [-1, 0, 18, 22],
-            rmn_nm: "열무비빔면",
+            rmnNm: "열무비빔면",
             rmn_seq: 124,
             cate1: "0100000",
             rmn_info: "가늘고 쫄깃한 면발과 청량감! <br> 입안 한 가득 느껴지는 열무의 매콤새콤함!",
@@ -471,7 +471,7 @@ const mockTestData = {
         },
         {
             pkg_seq: [-1, 0, 18, 22],
-            rmn_nm: "삼육채식라면(순한맛)",
+            rmnNm: "삼육채식라면(순한맛)",
             rmn_seq: 291,
             cate1: "0100000",
             rmn_info: "순 식물성으로 만든 면! <br> 국산 현미로 만든 면과 국산 버섯이 함유되어 담백한 국물의 채식 라면",
